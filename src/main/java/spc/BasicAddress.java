@@ -1,5 +1,10 @@
 package spc;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@ToString
+@EqualsAndHashCode
 public class BasicAddress implements Address {
 
     private final String value;
