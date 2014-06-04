@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -34,6 +35,9 @@ public class Tests {
 
         // Alice creates a transaction output that spends 8.99 SPC to Alice's change address
         TransactionOutput toAlice = TransactionOutput.of(8.99, address.getPubKeyHash());
+
+        // Alice creates a transaction with the given inputs and outputs
+        Transaction tx = Transaction.of(Arrays.asList(fromAlice), Arrays.asList(toBob, toAlice));
 
         assertThat(address.getValue(), equalTo(pubKeyHash.getValue()));
     }
