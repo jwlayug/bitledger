@@ -15,6 +15,8 @@ public class Tests {
     @Test
     public void test() {
 
+        Ledger ledger = new InMemoryLedger();
+
         // Bob creates a public/private keypair
         KeyPair keyPair = SimpleDSAKeyPairGenerator.generate();
         PublicKey publicKey = keyPair.getPublic();
