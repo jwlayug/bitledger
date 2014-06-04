@@ -24,6 +24,14 @@ public class Tests {
 
         Address address = SimpleAddress.of(pubKeyHash);
 
+        // ...Bob shares the address with Alice...
+
+        // Alice creates a transaction output that spends 1.00 SPC to Bob's address
+        TransactionOutput toBob = TransactionOutput.of(1.00, address.getPubKeyHash());
+
+        // Alice creates a transaction output that spends 8.99 SPC to Alice's change address
+        TransactionOutput toAlice = TransactionOutput.of(8.99, address.getPubKeyHash());
+
         assertThat(address.getValue(), equalTo(pubKeyHash.getValue()));
     }
 }
