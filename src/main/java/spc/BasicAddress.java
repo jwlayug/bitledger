@@ -7,18 +7,18 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class BasicAddress implements Address {
 
-    private final String value;
+    private final KeyHash keyHash;
 
-    private BasicAddress(String value) {
-        this.value = value;
+    private BasicAddress(KeyHash keyHash) {
+        this.keyHash = keyHash;
     }
 
     @Override
     public String getValue() {
-        return value;
+        return keyHash.getValue();
     }
 
-    public static BasicAddress of(String pubKeyHash) {
-        return new BasicAddress(pubKeyHash);
+    public static BasicAddress of(KeyHash keyHash) {
+        return new BasicAddress(keyHash);
     }
 }

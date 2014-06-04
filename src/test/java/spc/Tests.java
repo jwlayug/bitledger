@@ -36,6 +36,6 @@ public class Tests {
 
         Address address = BasicAddress.of(pubKeyHash);
 
-        assertThat(address.getValue(), equalTo(pubKeyHash));
+        assertThat(address.getValue(), equalTo(pubKeyHash.getValue()));
     }
 }
