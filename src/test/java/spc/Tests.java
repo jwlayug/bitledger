@@ -26,6 +26,9 @@ public class Tests {
 
         // ...Bob shares the address with Alice...
 
+        // Alice creates a transaction input that spends 1.00 SPC to Bob's address
+        TransactionInput fromAlice = TransactionInput.of(0, 0);
+
         // Alice creates a transaction output that spends 1.00 SPC to Bob's address
         TransactionOutput toBob = TransactionOutput.of(1.00, address.getPubKeyHash());
 
