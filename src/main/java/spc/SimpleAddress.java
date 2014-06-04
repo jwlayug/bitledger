@@ -5,11 +5,11 @@ import lombok.ToString;
 
 @ToString
 @EqualsAndHashCode
-public class BasicAddress implements Address {
+public class SimpleAddress implements Address {
 
     private final KeyHash keyHash;
 
-    private BasicAddress(KeyHash keyHash) {
+    private SimpleAddress(KeyHash keyHash) {
         this.keyHash = keyHash;
     }
 
@@ -18,7 +18,7 @@ public class BasicAddress implements Address {
         return keyHash.getValue();
     }
 
-    public static BasicAddress of(KeyHash keyHash) {
-        return new BasicAddress(keyHash);
+    public static SimpleAddress of(KeyHash keyHash) {
+        return new SimpleAddress(keyHash);
     }
 }

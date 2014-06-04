@@ -22,7 +22,7 @@ public class Tests {
         // Bob creates a public key hash using SHA256(pubkey)
         KeyHash pubKeyHash = SHA256KeyHash.of(publicKey);
 
-        Address address = BasicAddress.of(pubKeyHash);
+        Address address = SimpleAddress.of(pubKeyHash);
 
         assertThat(address.getValue(), equalTo(pubKeyHash.getValue()));
     }
