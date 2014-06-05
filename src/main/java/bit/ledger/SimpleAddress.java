@@ -1,4 +1,4 @@
-package spc;
+package bit.ledger;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

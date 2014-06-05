@@ -1,4 +1,4 @@
-package spc;
+package bit.ledger;
 
 import org.junit.Test;
 
@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 public class Tests {

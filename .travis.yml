@@ -1,4 +1,4 @@
-# Configuration for CI build at https://travis-ci.org/cbeams/spc
+# Configuration for CI build at https://travis-ci.org/cbeams/bitledger
 
 language: java
 

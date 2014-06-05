@@ -1,4 +1,4 @@
-package spc;
+package bit.ledger;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;

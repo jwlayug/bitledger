@@ -1,4 +1,4 @@
-package spc;
+package bit.ledger;
 
 public class Wallet {
 }
