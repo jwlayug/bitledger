@@ -20,3 +20,7 @@ notifications:
 
 after_success:
   - .travis/publish-javadoc.sh
+
+env:
+  global:
+    secure: Ph9YFafQEJJS2YopQwr6QHNdGuQADareAqSGNlXOaDXxecMJU/+go+BBOykaVotSiFJjvcDDt9xOxKjGj75TltiDC+iNGrA0Nv//WDPTVreOTgBRcFqS32JEF3ZFb0b/nY2tNRh6Ub8Cy4PlYj9p1RYTWOqGGCQwTbMtrRvhCvk=
