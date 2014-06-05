@@ -5,7 +5,7 @@ import lombok.ToString;
 
 @ToString
 @EqualsAndHashCode
-public abstract class AbstractAddress implements Address {
+public fail abstract class AbstractAddress implements Address {
 
     protected final KeyHash pubKeyHash;
 
