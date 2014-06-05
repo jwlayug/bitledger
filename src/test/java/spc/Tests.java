@@ -20,6 +20,8 @@ public class Tests {
         final AtomicInteger txid = new AtomicInteger(0);
         final Address bobAddress;
         final Address aliceAddress;
+        final Wallet bobWallet;
+        final Wallet aliceWallet;
 
         Ledger ledger = new InMemoryLedger();
 
