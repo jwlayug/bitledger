@@ -17,3 +17,6 @@ notifications:
     on_failure: always
     use_notice: true
     skip_join: true
+
+after_success:
+ - .travis/publish-javadoc.sh
