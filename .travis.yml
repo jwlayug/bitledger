@@ -10,8 +10,10 @@ notifications:
     channels:
       - "chat.freenode.net#bitledger"
     template:
-      - "%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
-      - "Duration: %{duration}"
-      - "Change view : %{compare_url}"
-      - "Build details : %{build_url}"
+      - "%{message} (%{repository}#%{build_number}, %{duration})"
+      - "%{repsitory}/%{branch} %{commit} %{author}: %{commit_message}"
+      - "%{build_url}"
+    on_success: change
+    on_failure: always
     use_notice: true
+    skip_join: true
