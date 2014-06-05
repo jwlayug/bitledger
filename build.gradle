@@ -1,5 +1,7 @@
 apply plugin: 'java'
+apply plugin: 'maven-publish'
 
+group = 'bit.ledger'
 version = '0.1.0-SNAPSHOT'
 
 wrapper.gradleVersion = '1.12'
@@ -20,4 +22,34 @@ dependencies {
 javadoc {
     options.header = title
     options.author = true
+}
+
+task sourceJar(type: Jar, dependsOn: classes) {
+    from sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives jar
+    archives sourceJar
+    archives javadocJar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourceJar {
+                classifier 'sources'
+            }
+
+            artifact javadocJar {
+                classifier 'javadoc'
+            }
+        }
+    }
 }
