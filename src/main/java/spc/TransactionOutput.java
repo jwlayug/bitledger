@@ -1,11 +1,16 @@
 package spc;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@ToString
+@EqualsAndHashCode
 public class TransactionOutput {
 
-    private final int amount;
+    private final double amount;
     private final KeyHash pubKeyHash;
 
-    private TransactionOutput(int amount, KeyHash pubKeyHash) {
+    private TransactionOutput(double amount, KeyHash pubKeyHash) {
         this.amount = amount;
         this.pubKeyHash = pubKeyHash;
     }
