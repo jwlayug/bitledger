@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public class SimpleAddress extends AbstractAddress {
 
     private SimpleAddress(KeyHash keyHash) {
