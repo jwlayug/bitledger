@@ -8,3 +8,6 @@ build
 
 # Vim
 *.sw[o|p]
+
+# Jekyll (from gh-pages branch)
+_site
