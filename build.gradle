@@ -69,3 +69,16 @@ publishing {
         }
     }
 }
+
+task ideaSettingsJar(type: Jar) {
+    description = 'Creates a settings archive suitable for import into IDEA'
+    from '.idea/exported_settings'
+    archiveName 'idea-settings.jar'
+    doLast {
+        print """
+        Wrote idea settings jar at ${archivePath}
+        Import this file into IDEA using File > Import Settings...
+        See .idea/exported_settings/README.md for further instructions
+        """
+    }
+}

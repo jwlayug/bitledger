@@ -2,9 +2,7 @@
 .gradle
 build
 
-# IDEA
-.idea
-!.idea/copyright
+# IDEA (see also .idea/.gitignore)
 *.iml
 
 # Vim

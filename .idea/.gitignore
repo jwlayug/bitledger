@@ -1,0 +1,24 @@
+# While most files in the .idea directory should be treated as transient
+# and disposable, certain files are checked in to facilitate sharing of
+# settings and simple, repeatable project setup. The approach taken in
+# this .gitignore file is to track everything by default, and then
+# blacklist files that are in fact transient. This helps raise awareness
+# when new settings changes occur, so that the team can evaluate whether
+# they are candidates for sharing or ignoring.
+#
+# Files with system-specific paths should never be committed.
+#
+# See exported_settings/README.md for additional details.
+
+.name
+codeStyleSettings.xml
+dictionaries/
+encodings.xml
+gradle.xml
+inspectionProfiles/
+libraries/
+misc.xml
+modules.xml
+scopes/
+vcs.xml
+workspace.xml
