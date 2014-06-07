@@ -14,4 +14,8 @@
  * limitations under the License.
  */
 
-rootProject.name = 'bitledger'
+/**
+ * @author Chris Beams
+ * @since 0.1.0
+ */
+package bit.ledger;
