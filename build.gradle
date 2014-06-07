@@ -82,3 +82,10 @@ task ideaSettingsJar(type: Jar) {
         """
     }
 }
+
+task unzipIdeaSettingsJar(type: Copy) {
+    description = 'Unzips an exported IDEA settings archive'
+    from(zipTree("${rootDir}/settings.jar"))
+    into('.idea/exported_settings')
+    outputs.upToDateWhen { false }
+}
