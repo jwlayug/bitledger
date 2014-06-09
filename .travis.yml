@@ -2,13 +2,11 @@
 
 language: java
 
-jdk:
-  - oraclejdk8
+jdk: oraclejdk8
 
 notifications:
   irc:
-    channels:
-      - chat.freenode.net#bitledger
+    channels: chat.freenode.net#bitledger
     template:
       - '%{message} (%{repository}#%{build_number}, %{duration})'
       - '%{repsitory}/%{branch} %{commit} %{author}: %{commit_message}'
@@ -20,8 +18,7 @@ notifications:
 
 script: ./gradlew publishSnapshot
 
-after_success:
-  - .travis/publish-javadoc.sh
+after_success: .travis/publish-javadoc.sh
 
 # see http://docs.travis-ci.com/user/build-configuration/#Secure-environment-variables
 env:
