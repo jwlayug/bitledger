@@ -16,7 +16,7 @@ notifications:
     use_notice: true
     skip_join: true
 
-script: ./gradlew publishSnapshot
+script: .travis/publish-snapshot.sh
 
 after_success: .travis/publish-javadoc.sh
 
