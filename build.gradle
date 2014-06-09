@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        // see configuration of the 'artifactory-publish' plugin below
+        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:2.2.4'
+    }
+}
+
 apply plugin: 'java'
-apply plugin: 'maven-publish'
-
-group = 'bit.ledger'
-version = '0.1.0-SNAPSHOT'
-
-wrapper.gradleVersion = '1.12'
 
 sourceCompatibility = 1.8
 
@@ -40,6 +44,10 @@ javadoc {
     options.author = true
 }
 
+
+// ----------------------------------------------------------------------------
+// Configure additional artifacts to be created during `gradle assemble`
+// ----------------------------------------------------------------------------
 task sourceJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allJava
 }
@@ -54,9 +62,18 @@ artifacts {
     archives javadocJar
 }
 
+
+// ----------------------------------------------------------------------------
+// Configure publication of Maven-compatible artifacts and metadata
+// ----------------------------------------------------------------------------
+apply plugin: 'maven-publish'
+
+group = 'bit.ledger'
+version = '0.1.0-SNAPSHOT'
+
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        main(MavenPublication) {
             from components.java
 
             artifact sourceJar {
@@ -66,10 +83,84 @@ publishing {
             artifact javadocJar {
                 classifier 'javadoc'
             }
+
+            pom.withXml {
+
+                // publish metadata required for inclusion in the Central Repository
+                asNode().with {
+                    appendNode('packaging', 'jar')
+                    appendNode('name', project.name)
+                    appendNode('description', 'A toolkit for building Bitcoin-like systems on the JVM')
+                    appendNode('url', 'http://bitledger.io')
+                    appendNode('licenses').with {
+                        appendNode('license').with {
+                            appendNode('name', 'The Apache Software License, Version 2.0')
+                            appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0')
+                        }
+                    }
+                    appendNode('developers').with {
+                        appendNode('developer').with {
+                            appendNode('id', 'cbeams')
+                            appendNode('name', 'Chris Beams')
+                            appendNode('email', 'chris@beams.io')
+                        }
+                    }
+                    appendNode('scm').with {
+                        appendNode('connection', 'git@github.com:cbeams/bitledger.git')
+                        appendNode('developerConnection', 'git@github.com:cbeams/bitledger.git')
+                        appendNode('url', 'https://github.com/cbeams/bitledger')
+                    }
+                }
+
+                // work around a bug the gradle-artifactory-plugin that causes compile-time dependencies to be published
+                // as runtime dependencies
+                asNode().dependencies.'*'.findAll() {
+                    it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
+                        dep.name == it.artifactId.text()
+                    }
+                }.each() {
+                    it.scope*.value = 'compile'
+                }
+            }
         }
     }
 }
 
+
+// ----------------------------------------------------------------------------
+// Configure publication of snapshots to Artifactory
+// ----------------------------------------------------------------------------
+apply plugin: 'artifactory-publish'
+
+task publishSnapshot {
+    dependsOn check, artifactoryPublish
+}
+
+artifactoryPublish.mustRunAfter check
+
+artifactory {
+    contextUrl = 'https://oss.jfrog.org'
+    resolve {
+        repository {
+            repoKey = 'libs-release'
+        }
+    }
+    publish {
+        repository {
+            repoKey = 'oss-snapshot-local'
+            username = project.hasProperty('bintrayUser') ? project.bintrayUser : 'missing_bintrayUser'
+            password = project.hasProperty('bintrayKey') ? project.bintrayKey : 'missing_bintrayKey'
+        }
+        defaults {
+            publications 'main' // see publishing.publications.main in 'publish-maven' configuration
+        }
+    }
+}
+
+
+// ----------------------------------------------------------------------------
+// Support import and export of shared IDEA settings
+// ----------------------------------------------------------------------------
 task ideaSettingsJar(type: Jar) {
     description = 'Creates a settings archive suitable for import into IDEA'
     from '.idea/exported_settings'
@@ -89,3 +180,9 @@ task unzipIdeaSettingsJar(type: Copy) {
     into('.idea/exported_settings')
     outputs.upToDateWhen { false }
 }
+
+
+// ----------------------------------------------------------------------------
+// Configure the Gradle wrapper
+// ----------------------------------------------------------------------------
+wrapper.gradleVersion = '1.12'
