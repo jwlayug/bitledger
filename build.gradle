@@ -64,6 +64,16 @@ artifacts {
 
 
 // ----------------------------------------------------------------------------
+// Configure signing artifacts
+// ----------------------------------------------------------------------------
+apply plugin: 'signing'
+
+signing {
+    sign configurations.archives
+}
+
+
+// ----------------------------------------------------------------------------
 // Configure publication of Maven-compatible artifacts and metadata
 // ----------------------------------------------------------------------------
 apply plugin: 'maven-publish'
