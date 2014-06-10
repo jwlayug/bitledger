@@ -7,4 +7,4 @@ url: "http://bitledger.io"
 
 # Build settings
 markdown: kramdown
-permalink: pretty
+permalink: /blog/:year/:month/:day/:title
