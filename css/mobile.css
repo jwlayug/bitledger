@@ -1,0 +1,51 @@
+body {
+    padding: 20px;
+}
+
+.title a {
+    font-size: 24px;
+}
+
+.title a .caps {
+    font-size: 28px;
+}
+
+.site {
+    margin: 0;
+    width: 100%;
+    overflow: hidden;
+}
+
+.header .nav {
+    display: none;
+}
+
+.posts .date {
+    display: none;
+}
+
+.posts li a {
+    display: block;
+    line-height: 25px;
+    margin-bottom: 15px;
+}
+
+.posts li a {
+
+}
+
+.post pre {
+    padding: 8px;
+}
+
+.post pre code {
+    font-size: 12px;
+}
+
+.text-footer .avatar {
+    top: 19px;
+}
+
+.social-share {
+    display: none;
+}
