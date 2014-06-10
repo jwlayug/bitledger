@@ -26,6 +26,8 @@ buildscript {
 
 apply plugin: 'java'
 
+version = '0.1.0-SNAPSHOT'
+
 sourceCompatibility = 1.8
 
 repositories {
@@ -40,6 +42,7 @@ dependencies {
 }
 
 javadoc {
+    title = "Bitledger ${version} API"
     options.header = title
     options.author = true
 }
@@ -69,7 +72,6 @@ artifacts {
 apply plugin: 'maven-publish'
 
 group = 'bit.ledger'
-version = '0.1.0-SNAPSHOT'
 
 publishing {
     publications {
