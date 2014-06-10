@@ -1,0 +1,10 @@
+# Site settings
+title: Bitledger
+email: info@bitledger.io
+description: "A toolkit for building Bitcoin-like systems on the JVM"
+baseurl: ""
+url: "http://bitledger.io"
+
+# Build settings
+markdown: redcarpet
+permalink: /blog/:year/:month/:day/:title

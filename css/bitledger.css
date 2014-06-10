@@ -1,0 +1,74 @@
+h3 {
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+h4 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.post p img {
+    width: 100%;
+    height: auto;
+}
+
+.text-footer {
+    position: relative;
+    margin: 20px 0;
+    padding: 15px 15px 15px 90px;
+    min-height: 82px;
+    border: #E3EDF3 2px dashed;
+    background: #F7FAFB;
+    border-radius: 4px;
+    color: #555;
+}
+
+.text-footer .avatar {
+    background-image: url('https://avatars1.githubusercontent.com/u/7751087?s=400');
+    background-size: 100%;
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    position: absolute;
+    left: 16px;
+    top: 9px;
+}
+
+.social-share {
+    margin-top: 50px;
+    padding-left: 216px;
+    color: #DEDEDE;
+    line-height: 30px;
+}
+
+.social-share .share-label {
+    display: inline-block;
+    line-height: 30px;
+    border-right: 1px solid #EEE;
+    padding-right: 10px;
+    font-size: 14px;
+}
+
+.social-share .share-links {
+    display: inline-block;
+    padding-left: 10px;
+    vertical-align: middle;
+}
+
+.share-links a {
+    font-size: 24px;
+    color: #DEDEDE;
+}
+
+.share-links a:hover {
+    color: #56a0c7;
+    text-decoration: none;
+}
+
+.copyright {
+  margin-top: 50px;
+  text-align: center;
+  font-size: 11px;
+  color: #CFCFCF;
+}

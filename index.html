@@ -1,1 +1,13 @@
-bitledger: <a href="api">API</a> | <a href="http://github.com/cbeams/bitledger">Source</a>
+---
+layout: default
+---
+      <div class="home">
+        <ul class="posts">
+          {% for post in site.posts %}
+          <li>
+            <span class="date">{{ post.date | date: "%b %-d, %Y" }}</span>
+            <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>

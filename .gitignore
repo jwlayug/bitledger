@@ -1,4 +1,8 @@
+# Artifacts from non-gh-pages branches
 .gradle
 .idea
 bitledger.iml
 build
+
+# Jekyll-specific artifacts
+_site
