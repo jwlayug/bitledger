@@ -5,7 +5,7 @@ Welcome! Bitledger aims to provide a general-purpose API and toolkit for buildin
 
 
 ### Artifacts
-When things do get rolling, this is how you'll be able to grab snapshots for use in your own applications:
+Use the following coordinates to grab snapshots for use in your own applications:
 
 #### Gradle
     repositories {
@@ -28,9 +28,12 @@ When things do get rolling, this is how you'll be able to grab snapshots for use
         <version>0.1.0-SNAPSHOT</version>
     </dependency>
 
+When ready, GA releases will be published to Bintray/JCenter and Maven Central. All project artifacts will be versioned according to [Semantic Versioning 2.0.0](http://semver.org) will be used.
+
 
 ### Documentation
 You'll be able to explore the API at <http://bitledger.io/api> and we'll be building out user documentation under the [doc]() directory. Again, not much there at the moment, but stay tuned...
+
 
 ### Discussion
 If you have questions or just want to say hello, join us via IRC at [#bitledger](http://webchat.freenode.net/?channels=bitledger) on Freenode. If you think a project like this sounds interesting (or not!) we'd love to hear your thoughts and ideas.
