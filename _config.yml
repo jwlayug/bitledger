@@ -6,5 +6,5 @@ baseurl: ""
 url: "http://bitledger.io"
 
 # Build settings
-markdown: kramdown
+markdown: redcarpet
 permalink: /blog/:year/:month/:day/:title
