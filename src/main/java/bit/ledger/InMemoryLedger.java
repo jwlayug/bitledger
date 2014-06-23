@@ -39,6 +39,14 @@ public class InMemoryLedger implements Ledger {
     }
 
     @Override
+    public double total() {
+        // count up all the coinbase / generation transactions
+        return transactions.stream()
+                .filter(tx -> tx.getFrom() == null)
+                .collect(Collectors.summingDouble(Transaction::getAmount));
+    }
+
+    @Override
     public double balance(Account account) {
         return transactions.stream()
                 .filter(tx -> tx.getTo().equals(account))

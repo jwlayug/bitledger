@@ -32,6 +32,7 @@ public class Tests {
         // the ledger starts out empty.
 
         Ledger ledger = new InMemoryLedger();
+        assertThat(ledger.total(), equalTo(0d));
 
         // 100 units of new money is generated and spent to account abc123
 
@@ -39,18 +40,21 @@ public class Tests {
         Transaction tx1 = Transaction.of(100, null, abc123); // amount, from, to
         ledger.add(tx1);
 
+        assertThat(ledger.balance(abc123), equalTo(100d));
+        assertThat(ledger.total(), equalTo(100d));
+
         // 25 of those units are spent from abc123 to def456
 
         Account def456 = Account.of("def456");
         Transaction tx2 = Transaction.of(25, abc123, def456);
         ledger.add(tx2);
 
-        // account abc123 should now have a balance of 75 units
-        // account def456 should now have a balance of 25 units
-
         // crawl the ledger and sum the value of all transactions for abc123
 
         assertThat(ledger.balance(abc123), equalTo(75d));
         assertThat(ledger.balance(def456), equalTo(25d));
+
+        // total amount in the ledger is still 100 units
+        assertThat(ledger.total(), equalTo(100d));
     }
 }
