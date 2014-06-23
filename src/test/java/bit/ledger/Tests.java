@@ -18,13 +18,11 @@ package bit.ledger;
 
 import org.junit.Test;
 
-import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -35,71 +33,46 @@ public class Tests {
     @Test
     public void test() {
 
-        final AtomicInteger txid = new AtomicInteger(0);
-        final Address bobAddress;
-        final Address aliceAddress;
-        final Wallet bobWallet;
-        final Wallet aliceWallet;
+        AtomicInteger txid = new AtomicInteger(0);
+
+        // the ledger starts out empty.
 
         Ledger ledger = new InMemoryLedger();
+        assertThat(ledger.total(), equalTo(0d));
 
-        {
-            // Alice creates a keypair
-            KeyPair keyPair = SimpleDSAKeyPairGenerator.generate();
-            PublicKey publicKey = keyPair.getPublic();
-            PrivateKey privateKey = keyPair.getPrivate();
+        // 100 units of new money is generated and spent to address alice_a1
 
-            // Alice creates a public key hash using SHA256(pubkey)
-            KeyHash pubKeyHash = SHA256KeyHash.of(publicKey);
+        Recipient alice_1 = Recipient.of("alice_1");
+        Transaction tx1 = Transaction.of(
+                txid.incrementAndGet(),
+                Collections.emptyList(),
+                Arrays.asList(
+                        TransactionOutput.of(100, alice_1)
+                ));
+        ledger.add(tx1);
 
-            aliceAddress = SimpleAddress.of(pubKeyHash);
-        }
+        assertThat(ledger.balance(alice_1), equalTo(100d));
+        assertThat(ledger.total(), equalTo(100d));
 
-        {
-            // Alice is the recipient of a generation (coinbase) transaction
-            Transaction coinbaseTx = Transaction.of(
-                    txid.getAndIncrement(),
-                    Collections.emptyList(),
-                    Arrays.asList(TransactionOutput.of(10.00, aliceAddress.getPubKeyHash())));
+        // 25 of those units are spent from alice_a1 to bob_1
 
-            ledger.add(coinbaseTx);
-        }
+        Recipient bob_1 = Recipient.of("bob_1");
+        Transaction tx2 = Transaction.of(
+                txid.incrementAndGet(),
+                Arrays.asList(TransactionInput.of(tx1.getId(), 0)), // spend the original coinbase tx output
+                Arrays.asList(
+                        TransactionOutput.of(25d, bob_1),           // pay bob 25 units
+                        TransactionOutput.of(75d, alice_1)          // spend remainder (change) back to self
+                )
+        );
+        ledger.add(tx2);
 
-        {
-            // Bob creates a public/private keypair
-            KeyPair keyPair = SimpleDSAKeyPairGenerator.generate();
-            PublicKey publicKey = keyPair.getPublic();
-            PrivateKey privateKey = keyPair.getPrivate();
+        // crawl the ledger and sum the value of all transactions for alice_a1
 
-            // Bob creates a public key hash using SHA256(pubkey)
-            KeyHash pubKeyHash = SHA256KeyHash.of(publicKey);
+        assertThat(ledger.balance(alice_1), equalTo(75d));
+        assertThat(ledger.balance(bob_1), equalTo(25d));
 
-            bobAddress = SimpleAddress.of(pubKeyHash);
-        }
-
-        // ...Bob shares the address with Alice...
-
-        {
-            // And alice pays Bob the 1 SPC she owes him:
-
-            // Alice creates a transaction input that spends 1.00 SPC to Bob's address
-            TransactionInput fromAlice = TransactionInput.of(0, 0);
-
-            // Alice creates a transaction output that spends 1.00 SPC to Bob's address
-            TransactionOutput toBob = TransactionOutput.of(1.00, bobAddress.getPubKeyHash());
-
-            // Alice creates a transaction output that spends 8.99 SPC to Alice's change address
-            TransactionOutput toAlice = TransactionOutput.of(8.99, aliceAddress.getPubKeyHash());
-
-            // Alice creates a transaction with the given inputs and outputs
-            Transaction tx = Transaction.of(
-                    txid.getAndIncrement(),
-                    Arrays.asList(fromAlice),
-                    Arrays.asList(toBob, toAlice));
-
-            ledger.add(tx);
-        }
-
-        System.out.println(ledger);
+        // total amount in the ledger is still 100 units
+        assertThat(ledger.total(), equalTo(100d));
     }
 }

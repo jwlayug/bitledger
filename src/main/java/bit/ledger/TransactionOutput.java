@@ -28,14 +28,23 @@ import lombok.ToString;
 public class TransactionOutput {
 
     private final double amount;
-    private final KeyHash pubKeyHash;
 
-    private TransactionOutput(double amount, KeyHash pubKeyHash) {
+    private final Recipient recipient;
+
+    private TransactionOutput(double amount, Recipient recipient) {
         this.amount = amount;
-        this.pubKeyHash = pubKeyHash;
+        this.recipient = recipient;
     }
 
-    public static TransactionOutput of(double amount, KeyHash pubKeyHash) {
-        return new TransactionOutput(amount, pubKeyHash);
+    public double getAmount() {
+        return amount;
+    }
+
+    public Recipient getRecipient() {
+        return recipient;
+    }
+
+    public static TransactionOutput of(double amount, Recipient recipient) {
+        return new TransactionOutput(amount, recipient);
     }
 }

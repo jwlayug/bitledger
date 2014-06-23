@@ -35,6 +35,10 @@ public class TransactionInput {
         this.outputIndex = outputIndex;
     }
 
+    /**
+     * @param txid the ID of an earlier {@link Transaction} with an output that this input will spend
+     * @param outputIndex the index of the {@link TransactionOutput} to be spent by this input.
+     */
     public static TransactionInput of(int txid, int outputIndex) {
         return new TransactionInput(txid, outputIndex);
     }

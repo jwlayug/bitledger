@@ -16,11 +16,20 @@
 
 package bit.ledger;
 
-/**
- * @author Chris Beams
- * @since 0.1.0
- */
-public interface KeyHash {
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-    String getValue();
+@ToString
+@EqualsAndHashCode
+public class Recipient {
+
+    private final String id;
+
+    private Recipient(String id) {
+        this.id = id;
+    }
+
+    public static Recipient of(String id) {
+        return new Recipient(id);
+    }
 }
