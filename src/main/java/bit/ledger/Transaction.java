@@ -20,6 +20,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Chris Beams
@@ -37,6 +38,22 @@ public class Transaction {
         this.id = id;
         this.inputs = inputs;
         this.outputs = outputs;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public List<TransactionInput> getInputs() {
+        return inputs;
+    }
+
+    public List<TransactionOutput> getOutputs() {
+        return outputs;
+    }
+
+    public double sumOutputs() {
+        return outputs.stream().collect(Collectors.summingDouble(TransactionOutput::getAmount));
     }
 
     public static Transaction of(int id, List<TransactionInput> inputs, List<TransactionOutput> outputs) {

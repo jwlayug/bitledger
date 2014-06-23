@@ -18,6 +18,10 @@ package bit.ledger;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -29,6 +33,8 @@ public class Tests {
     @Test
     public void test() {
 
+        AtomicInteger txid = new AtomicInteger(0);
+
         // the ledger starts out empty.
 
         Ledger ledger = new InMemoryLedger();
@@ -36,23 +42,35 @@ public class Tests {
 
         // 100 units of new money is generated and spent to address alice_a1
 
-        Address alice_a1 = Address.of("alice_a1");
-        Transaction tx1 = Transaction.of(100, null, alice_a1); // amount, from, to
+        Recipient alice_1 = Recipient.of("alice_1");
+        Transaction tx1 = Transaction.of(
+                txid.incrementAndGet(),
+                Collections.emptyList(),
+                Arrays.asList(
+                        TransactionOutput.of(100, alice_1)
+                ));
         ledger.add(tx1);
 
-        assertThat(ledger.balance(alice_a1), equalTo(100d));
+        assertThat(ledger.balance(alice_1), equalTo(100d));
         assertThat(ledger.total(), equalTo(100d));
 
-        // 25 of those units are spent from alice_a1 to bob_a1
+        // 25 of those units are spent from alice_a1 to bob_1
 
-        Address bob_a1 = Address.of("bob_a1");
-        Transaction tx2 = Transaction.of(25, alice_a1, bob_a1);
+        Recipient bob_1 = Recipient.of("bob_1");
+        Transaction tx2 = Transaction.of(
+                txid.incrementAndGet(),
+                Arrays.asList(TransactionInput.of(tx1.getId(), 0)), // spend the original coinbase tx output
+                Arrays.asList(
+                        TransactionOutput.of(25d, bob_1),           // pay bob 25 units
+                        TransactionOutput.of(75d, alice_1)          // spend remainder (change) back to self
+                )
+        );
         ledger.add(tx2);
 
         // crawl the ledger and sum the value of all transactions for alice_a1
 
-        assertThat(ledger.balance(alice_a1), equalTo(75d));
-        assertThat(ledger.balance(bob_a1), equalTo(25d));
+        assertThat(ledger.balance(alice_1), equalTo(75d));
+        assertThat(ledger.balance(bob_1), equalTo(25d));
 
         // total amount in the ledger is still 100 units
         assertThat(ledger.total(), equalTo(100d));

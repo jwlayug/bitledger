@@ -42,18 +42,38 @@ public class InMemoryLedger implements Ledger {
     public double total() {
         // count up all the coinbase / generation transactions
         return transactions.stream()
-                .filter(tx -> tx.getFrom() == null)
-                .collect(Collectors.summingDouble(Transaction::getAmount));
+                .filter(tx -> tx.getInputs().isEmpty())
+                .collect(Collectors.summingDouble(Transaction::sumOutputs));
+    }
+
+    public List<TransactionOutput> unspent(Recipient recipient) {
+        if (recipient == null) {
+            throw new IllegalArgumentException("recipient must not be null");
+        }
+
+        List<TransactionOutput> unspent = new ArrayList<>();
+        List<TransactionInput> allInputs = new ArrayList<>();
+
+        for (Transaction tx : transactions) {
+            allInputs.addAll(tx.getInputs());
+        }
+
+        for (Transaction tx : transactions) {
+            List<TransactionOutput> outputs = tx.getOutputs();
+            for (int outputIndex = 0; outputIndex < outputs.size(); outputIndex++) {
+                TransactionOutput output = outputs.get(outputIndex);
+                if (recipient.equals(output.getRecipient()) &&
+                        !allInputs.contains(TransactionInput.of(tx.getId(), outputIndex))) {
+                    unspent.add(output);
+                }
+            }
+        }
+
+        return unspent;
     }
 
     @Override
-    public double balance(Address address) {
-        return transactions.stream()
-                .filter(tx -> tx.getTo().equals(address))
-                .collect(Collectors.summingDouble(Transaction::getAmount)) -
-
-                transactions.stream()
-                        .filter(tx -> tx.getFrom() != null && tx.getFrom().equals(address))
-                        .collect(Collectors.summingDouble(Transaction::getAmount));
+    public double balance(Recipient recipient) {
+        return unspent(recipient).stream().collect(Collectors.summingDouble(TransactionOutput::getAmount));
     }
 }

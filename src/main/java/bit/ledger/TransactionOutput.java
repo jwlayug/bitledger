@@ -28,14 +28,23 @@ import lombok.ToString;
 public class TransactionOutput {
 
     private final double amount;
-    private final RecipientId recipientId;
 
-    private TransactionOutput(double amount, RecipientId recipientId) {
+    private final Recipient recipient;
+
+    private TransactionOutput(double amount, Recipient recipient) {
         this.amount = amount;
-        this.recipientId = recipientId;
+        this.recipient = recipient;
     }
 
-    public static TransactionOutput of(double amount, RecipientId recipientId) {
-        return new TransactionOutput(amount, recipientId);
+    public double getAmount() {
+        return amount;
+    }
+
+    public Recipient getRecipient() {
+        return recipient;
+    }
+
+    public static TransactionOutput of(double amount, Recipient recipient) {
+        return new TransactionOutput(amount, recipient);
     }
 }
