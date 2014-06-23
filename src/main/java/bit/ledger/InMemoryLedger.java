@@ -47,13 +47,13 @@ public class InMemoryLedger implements Ledger {
     }
 
     @Override
-    public double balance(Account account) {
+    public double balance(Address address) {
         return transactions.stream()
-                .filter(tx -> tx.getTo().equals(account))
+                .filter(tx -> tx.getTo().equals(address))
                 .collect(Collectors.summingDouble(Transaction::getAmount)) -
 
                 transactions.stream()
-                        .filter(tx -> tx.getFrom() != null && tx.getFrom().equals(account))
+                        .filter(tx -> tx.getFrom() != null && tx.getFrom().equals(address))
                         .collect(Collectors.summingDouble(Transaction::getAmount));
     }
 }

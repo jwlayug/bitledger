@@ -21,15 +21,15 @@ import lombok.ToString;
 
 @ToString
 @EqualsAndHashCode
-public class Account {
+public class Address {
 
     private final String id;
 
-    private Account(String id) {
+    private Address(String id) {
         this.id = id;
     }
 
-    public static Account of(String id) {
-        return new Account(id);
+    public static Address of(String id) {
+        return new Address(id);
     }
 }

@@ -34,25 +34,25 @@ public class Tests {
         Ledger ledger = new InMemoryLedger();
         assertThat(ledger.total(), equalTo(0d));
 
-        // 100 units of new money is generated and spent to account abc123
+        // 100 units of new money is generated and spent to address alice_a1
 
-        Account abc123 = Account.of("abc123");
-        Transaction tx1 = Transaction.of(100, null, abc123); // amount, from, to
+        Address alice_a1 = Address.of("alice_a1");
+        Transaction tx1 = Transaction.of(100, null, alice_a1); // amount, from, to
         ledger.add(tx1);
 
-        assertThat(ledger.balance(abc123), equalTo(100d));
+        assertThat(ledger.balance(alice_a1), equalTo(100d));
         assertThat(ledger.total(), equalTo(100d));
 
-        // 25 of those units are spent from abc123 to def456
+        // 25 of those units are spent from alice_a1 to bob_a1
 
-        Account def456 = Account.of("def456");
-        Transaction tx2 = Transaction.of(25, abc123, def456);
+        Address bob_a1 = Address.of("bob_a1");
+        Transaction tx2 = Transaction.of(25, alice_a1, bob_a1);
         ledger.add(tx2);
 
-        // crawl the ledger and sum the value of all transactions for abc123
+        // crawl the ledger and sum the value of all transactions for alice_a1
 
-        assertThat(ledger.balance(abc123), equalTo(75d));
-        assertThat(ledger.balance(def456), equalTo(25d));
+        assertThat(ledger.balance(alice_a1), equalTo(75d));
+        assertThat(ledger.balance(bob_a1), equalTo(25d));
 
         // total amount in the ledger is still 100 units
         assertThat(ledger.total(), equalTo(100d));

@@ -19,8 +19,6 @@ package bit.ledger;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.List;
-
 /**
  * @author Chris Beams
  * @since 0.1.0
@@ -30,10 +28,10 @@ import java.util.List;
 public class Transaction {
 
     private final double amount;
-    private final Account from;
-    private final Account to;
+    private final Address from;
+    private final Address to;
 
-    private Transaction(double amount, Account from, Account to) {
+    private Transaction(double amount, Address from, Address to) {
         this.amount = amount;
         this.from = from;
         this.to = to;
@@ -43,15 +41,15 @@ public class Transaction {
         return amount;
     }
 
-    public Account getFrom() {
+    public Address getFrom() {
         return from;
     }
 
-    public Account getTo() {
+    public Address getTo() {
         return to;
     }
 
-    public static Transaction of(double amount, Account from, Account to) {
+    public static Transaction of(double amount, Address from, Address to) {
         return new Transaction(amount, from, to);
     }
 }

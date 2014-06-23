@@ -26,5 +26,5 @@ public interface Ledger {
 
     double total();
 
-    double balance(Account account);
+    double balance(Address address);
 }
