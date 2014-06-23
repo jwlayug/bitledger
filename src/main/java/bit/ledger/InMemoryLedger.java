@@ -35,7 +35,25 @@ public class InMemoryLedger implements Ledger {
 
     @Override
     public void add(Transaction transaction) {
-        this.transactions.add(transaction);
+        validate(transaction);
+        transactions.add(transaction);
+    }
+
+    private void validate(Transaction transaction) {
+        for (TransactionInput input : transaction.getInputs()) {
+            if (containsInput(input)) {
+                throw new InvalidTransactionException("double spend");
+            }
+        }
+    }
+
+    private boolean containsInput(TransactionInput input) {
+        for (Transaction transaction : transactions) {
+            if (transaction.getInputs().contains(input)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

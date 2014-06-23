@@ -99,12 +99,18 @@ public class Tests {
                         TransactionOutput.of(100d, charlie_1)
                 )
         );
-        ledger.add(tx3); // should have seen error here.
 
+        try {
+            ledger.add(tx3);
+        } catch (InvalidTransactionException ex) {
+            assertThat(ex.getMessage(), equalTo("double spend"));
+        }
+
+        // assert the ledger is in a sane state after the attempted double-spend
         assertThat(ledger.balance(alice_1), equalTo(0d));
         assertThat(ledger.balance(alice_2), equalTo(75d));
         assertThat(ledger.balance(bob_1), equalTo(25d));
-        assertThat(ledger.balance(charlie_1), equalTo(100d));
-        assertThat(ledger.total(), equalTo(200d)); // <-- BAD. We've double-spent and inflated the monetary supply.
+        assertThat(ledger.balance(charlie_1), equalTo(0d));
+        assertThat(ledger.total(), equalTo(100d));
     }
 }
