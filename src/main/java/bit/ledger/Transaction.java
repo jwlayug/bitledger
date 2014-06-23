@@ -29,14 +29,29 @@ import java.util.List;
 @EqualsAndHashCode
 public class Transaction {
 
-    //private final int id;
+    private final double amount;
+    private final Account from;
+    private final Account to;
 
-    //private Transaction(int id, List<TransactionInput> inputs, List<TransactionOutput> outputs) {
-        //this.id = id;
-    //}
+    private Transaction(double amount, Account from, Account to) {
+        this.amount = amount;
+        this.from = from;
+        this.to = to;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public Account getFrom() {
+        return from;
+    }
+
+    public Account getTo() {
+        return to;
+    }
 
     public static Transaction of(double amount, Account from, Account to) {
-        //return new Transaction(id, inputs, outputs);
-        return null;
+        return new Transaction(amount, from, to);
     }
 }

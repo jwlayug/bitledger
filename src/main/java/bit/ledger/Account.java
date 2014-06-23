@@ -16,8 +16,20 @@
 
 package bit.ledger;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@ToString
+@EqualsAndHashCode
 public class Account {
+
+    private final String id;
+
+    private Account(String id) {
+        this.id = id;
+    }
+
     public static Account of(String id) {
-        return null;
+        return new Account(id);
     }
 }

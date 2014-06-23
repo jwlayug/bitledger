@@ -21,6 +21,7 @@ import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Chris Beams
@@ -39,6 +40,12 @@ public class InMemoryLedger implements Ledger {
 
     @Override
     public double balance(Account account) {
-        return 0;
+        return transactions.stream()
+                .filter(tx -> tx.getTo().equals(account))
+                .collect(Collectors.summingDouble(Transaction::getAmount)) -
+
+                transactions.stream()
+                        .filter(tx -> tx.getFrom() != null && tx.getFrom().equals(account))
+                        .collect(Collectors.summingDouble(Transaction::getAmount));
     }
 }

@@ -50,7 +50,7 @@ public class Tests {
 
         // crawl the ledger and sum the value of all transactions for abc123
 
-        assertThat(ledger.balance(abc123), equalTo(75));
-        assertThat(ledger.balance(def456), equalTo(25));
+        assertThat(ledger.balance(abc123), equalTo(75d));
+        assertThat(ledger.balance(def456), equalTo(25d));
     }
 }
