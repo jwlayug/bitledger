@@ -40,10 +40,27 @@ public class InMemoryLedger implements Ledger {
 
     @Override
     public double total() {
-        // count up all the coinbase / generation transactions
-        return transactions.stream()
-                .filter(tx -> tx.getInputs().isEmpty())
-                .collect(Collectors.summingDouble(Transaction::sumOutputs));
+        // the total number of units in the ledger is always equal to the
+        // sum of its unspent transaction outputs
+
+        List<TransactionOutput> unspent = new ArrayList<>();
+        List<TransactionInput> allInputs = new ArrayList<>();
+
+        for (Transaction tx : transactions) {
+            allInputs.addAll(tx.getInputs());
+        }
+
+        for (Transaction tx : transactions) {
+            List<TransactionOutput> outputs = tx.getOutputs();
+            for (int outputIndex = 0; outputIndex < outputs.size(); outputIndex++) {
+                TransactionOutput output = outputs.get(outputIndex);
+                if (!allInputs.contains(TransactionInput.of(tx.getId(), outputIndex))) {
+                    unspent.add(output);
+                }
+            }
+        }
+
+        return unspent.stream().mapToDouble(TransactionOutput::getAmount).sum();
     }
 
     public List<TransactionOutput> unspent(Recipient recipient) {

@@ -88,5 +88,23 @@ public class Tests {
 
         assertThat(alice.balance(), equalTo(75d));
         assertThat(bob.balance(), equalTo(25d));
+
+
+        // attempt to double spend
+        Recipient charlie_1 = Recipient.of("charlie_1");
+        Transaction tx3 = Transaction.of(
+                txid.incrementAndGet(),
+                Arrays.asList(TransactionInput.of(tx1.getId(), 0)), // try to double-spend the original tx
+                Arrays.asList(
+                        TransactionOutput.of(100d, charlie_1)
+                )
+        );
+        ledger.add(tx3); // should have seen error here.
+
+        assertThat(ledger.balance(alice_1), equalTo(0d));
+        assertThat(ledger.balance(alice_2), equalTo(75d));
+        assertThat(ledger.balance(bob_1), equalTo(25d));
+        assertThat(ledger.balance(charlie_1), equalTo(100d));
+        assertThat(ledger.total(), equalTo(200d)); // <-- BAD. We've double-spent and inflated the monetary supply.
     }
 }
