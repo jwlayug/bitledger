@@ -40,9 +40,15 @@ public class Tests {
         Ledger ledger = new InMemoryLedger();
         assertThat(ledger.total(), equalTo(0d));
 
+        Wallet alice = new Wallet(ledger);
+        Wallet bob = new Wallet(ledger);
+
+
         // 100 units of new money is generated and spent to address alice_a1
 
         Recipient alice_1 = Recipient.of("alice_1");
+        alice.add(alice_1);
+
         Transaction tx1 = Transaction.of(
                 txid.incrementAndGet(),
                 Collections.emptyList(),
@@ -57,6 +63,8 @@ public class Tests {
         // 25 of those units are spent from alice_a1 to bob_1
 
         Recipient bob_1 = Recipient.of("bob_1");
+        bob.add(bob_1);
+
         Transaction tx2 = Transaction.of(
                 txid.incrementAndGet(),
                 Arrays.asList(TransactionInput.of(tx1.getId(), 0)), // spend the original coinbase tx output
@@ -74,5 +82,8 @@ public class Tests {
 
         // total amount in the ledger is still 100 units
         assertThat(ledger.total(), equalTo(100d));
+
+        assertThat(alice.balance(), equalTo(75d));
+        assertThat(bob.balance(), equalTo(25d));
     }
 }
