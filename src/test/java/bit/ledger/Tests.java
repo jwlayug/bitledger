@@ -33,7 +33,7 @@ import static org.junit.Assert.assertThat;
 public class Tests {
 
     @Test
-    public void test() {
+    public void test1() {
 
         final AtomicInteger txid = new AtomicInteger(0);
         final Address bobAddress;
