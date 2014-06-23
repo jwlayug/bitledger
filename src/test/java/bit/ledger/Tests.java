@@ -47,7 +47,9 @@ public class Tests {
         // 100 units of new money is generated and spent to address alice_a1
 
         Recipient alice_1 = Recipient.of("alice_1");
+        Recipient alice_2 = Recipient.of("alice_2"); // use this for a change address below
         alice.add(alice_1);
+        alice.add(alice_2);
 
         Transaction tx1 = Transaction.of(
                 txid.incrementAndGet(),
@@ -70,14 +72,15 @@ public class Tests {
                 Arrays.asList(TransactionInput.of(tx1.getId(), 0)), // spend the original coinbase tx output
                 Arrays.asList(
                         TransactionOutput.of(25d, bob_1),           // pay bob 25 units
-                        TransactionOutput.of(75d, alice_1)          // spend remainder (change) back to self
+                        TransactionOutput.of(75d, alice_2)          // spend remainder to change address
                 )
         );
         ledger.add(tx2);
 
-        // crawl the ledger and sum the value of all transactions for alice_a1
+        // crawl the ledger and sum the value of all transactions
 
-        assertThat(ledger.balance(alice_1), equalTo(75d));
+        assertThat(ledger.balance(alice_1), equalTo(0d));
+        assertThat(ledger.balance(alice_2), equalTo(75d));
         assertThat(ledger.balance(bob_1), equalTo(25d));
 
         // total amount in the ledger is still 100 units
