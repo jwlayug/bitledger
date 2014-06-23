@@ -16,11 +16,8 @@
 
 package bit.ledger;
 
-/**
- * @author Chris Beams
- * @since 0.1.0
- */
-public interface KeyHash {
-
-    String getValue();
+public class Account {
+    public static Account of(String id) {
+        return null;
+    }
 }

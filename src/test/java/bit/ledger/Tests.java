@@ -18,13 +18,7 @@ package bit.ledger;
 
 import org.junit.Test;
 
-import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.concurrent.atomic.AtomicInteger;
-
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -33,73 +27,30 @@ import static org.junit.Assert.assertThat;
 public class Tests {
 
     @Test
-    public void test1() {
+    public void test() {
 
-        final AtomicInteger txid = new AtomicInteger(0);
-        final Address bobAddress;
-        final Address aliceAddress;
-        final Wallet bobWallet;
-        final Wallet aliceWallet;
+        // the ledger starts out empty.
 
         Ledger ledger = new InMemoryLedger();
 
-        {
-            // Alice creates a keypair
-            KeyPair keyPair = SimpleDSAKeyPairGenerator.generate();
-            PublicKey publicKey = keyPair.getPublic();
-            PrivateKey privateKey = keyPair.getPrivate();
+        // 100 units of new money is generated and spent to account abc123
 
-            // Alice creates a public key hash using SHA256(pubkey)
-            KeyHash pubKeyHash = SHA256KeyHash.of(publicKey);
+        Account abc123 = Account.of("abc123");
+        Transaction tx1 = Transaction.of(100, null, abc123); // amount, from, to
+        ledger.add(tx1);
 
-            aliceAddress = SimpleAddress.of(pubKeyHash);
-        }
+        // 25 of those units are spent from abc123 to def456
 
-        {
-            // Alice is the recipient of a generation (coinbase) transaction
-            Transaction coinbaseTx = Transaction.of(
-                    txid.getAndIncrement(),
-                    Collections.emptyList(),
-                    Arrays.asList(TransactionOutput.of(10.00, aliceAddress.getPubKeyHash())));
+        Account def456 = Account.of("def456");
+        Transaction tx2 = Transaction.of(25, abc123, def456);
+        ledger.add(tx2);
 
-            ledger.add(coinbaseTx);
-        }
+        // account abc123 should now have a balance of 75 units
+        // account def456 should now have a balance of 25 units
 
-        {
-            // Bob creates a public/private keypair
-            KeyPair keyPair = SimpleDSAKeyPairGenerator.generate();
-            PublicKey publicKey = keyPair.getPublic();
-            PrivateKey privateKey = keyPair.getPrivate();
+        // crawl the ledger and sum the value of all transactions for abc123
 
-            // Bob creates a public key hash using SHA256(pubkey)
-            KeyHash pubKeyHash = SHA256KeyHash.of(publicKey);
-
-            bobAddress = SimpleAddress.of(pubKeyHash);
-        }
-
-        // ...Bob shares the address with Alice...
-
-        {
-            // And alice pays Bob the 1 SPC she owes him:
-
-            // Alice creates a transaction input that spends 1.00 SPC to Bob's address
-            TransactionInput fromAlice = TransactionInput.of(0, 0);
-
-            // Alice creates a transaction output that spends 1.00 SPC to Bob's address
-            TransactionOutput toBob = TransactionOutput.of(1.00, bobAddress.getPubKeyHash());
-
-            // Alice creates a transaction output that spends 8.99 SPC to Alice's change address
-            TransactionOutput toAlice = TransactionOutput.of(8.99, aliceAddress.getPubKeyHash());
-
-            // Alice creates a transaction with the given inputs and outputs
-            Transaction tx = Transaction.of(
-                    txid.getAndIncrement(),
-                    Arrays.asList(fromAlice),
-                    Arrays.asList(toBob, toAlice));
-
-            ledger.add(tx);
-        }
-
-        System.out.println(ledger);
+        assertThat(ledger.balance(abc123), equalTo(75));
+        assertThat(ledger.balance(def456), equalTo(25));
     }
 }

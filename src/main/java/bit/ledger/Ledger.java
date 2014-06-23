@@ -23,4 +23,6 @@ package bit.ledger;
 public interface Ledger {
 
     void add(Transaction transaction);
+
+    double balance(Account account);
 }

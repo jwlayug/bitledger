@@ -36,4 +36,9 @@ public class InMemoryLedger implements Ledger {
     public void add(Transaction transaction) {
         this.transactions.add(transaction);
     }
+
+    @Override
+    public double balance(Account account) {
+        return 0;
+    }
 }
