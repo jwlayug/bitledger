@@ -19,8 +19,10 @@ package bit.ledger;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Chris Beams
@@ -44,19 +46,25 @@ public class Transaction {
         return id;
     }
 
-    public List<TransactionInput> getInputs() {
-        return inputs;
+    public Stream<TransactionInput> inputs() {
+        return inputs.stream();
     }
 
-    public List<TransactionOutput> getOutputs() {
-        return outputs;
+    public Stream<TransactionOutput> outputs() {
+        return outputs.stream();
     }
 
-    public double sumOutputs() {
-        return outputs.stream().collect(Collectors.summingDouble(TransactionOutput::getAmount));
+    public static Transaction of(int id, List<TransactionInput> inputs, List<TransactionOutput.Data> outputs) {
+        return new Transaction(id, inputs, indexed(outputs, id));
     }
 
-    public static Transaction of(int id, List<TransactionInput> inputs, List<TransactionOutput> outputs) {
-        return new Transaction(id, inputs, outputs);
+    private static List<TransactionOutput> indexed(List<TransactionOutput.Data> outputs, int txId) {
+        List<TransactionOutput> indexedOutputs = new ArrayList<>();
+
+        for (int i = 0; i < outputs.size(); i++) {
+            indexedOutputs.add(TransactionOutput.of(txId, i, outputs.get(i)));
+        }
+
+        return indexedOutputs;
     }
 }

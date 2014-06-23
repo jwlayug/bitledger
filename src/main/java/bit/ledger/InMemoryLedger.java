@@ -21,7 +21,7 @@ import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Chris Beams
@@ -33,82 +33,49 @@ public class InMemoryLedger implements Ledger {
 
     private final List<Transaction> transactions = new ArrayList<>();
 
+    public Stream<Transaction> transactions() {
+        return transactions.stream();
+    }
+
     @Override
     public void add(Transaction transaction) {
-        validate(transaction);
-        transactions.add(transaction);
-    }
-
-    private void validate(Transaction transaction) {
-        for (TransactionInput input : transaction.getInputs()) {
-            if (containsInput(input)) {
-                throw new InvalidTransactionException("double spend");
-            }
-        }
-    }
-
-    private boolean containsInput(TransactionInput input) {
-        for (Transaction transaction : transactions) {
-            if (transaction.getInputs().contains(input)) {
-                return true;
-            }
-        }
-        return false;
+        transactions.add(validated(transaction));
     }
 
     @Override
     public double total() {
-        // the total number of units in the ledger is always equal to the
-        // sum of its unspent transaction outputs
-
-        List<TransactionOutput> unspent = new ArrayList<>();
-        List<TransactionInput> allInputs = new ArrayList<>();
-
-        for (Transaction tx : transactions) {
-            allInputs.addAll(tx.getInputs());
-        }
-
-        for (Transaction tx : transactions) {
-            List<TransactionOutput> outputs = tx.getOutputs();
-            for (int outputIndex = 0; outputIndex < outputs.size(); outputIndex++) {
-                TransactionOutput output = outputs.get(outputIndex);
-                if (!allInputs.contains(TransactionInput.of(tx.getId(), outputIndex))) {
-                    unspent.add(output);
-                }
-            }
-        }
-
-        return unspent.stream().mapToDouble(TransactionOutput::getAmount).sum();
+        return unspentOutputs().mapToDouble(TransactionOutput::getAmount).sum();
     }
 
-    public List<TransactionOutput> unspent(Recipient recipient) {
-        if (recipient == null) {
-            throw new IllegalArgumentException("recipient must not be null");
-        }
+    private Stream<TransactionOutput> outputs() {
+        return transactions().flatMap(Transaction::outputs);
+    }
 
-        List<TransactionOutput> unspent = new ArrayList<>();
-        List<TransactionInput> allInputs = new ArrayList<>();
+    private Stream<TransactionOutput> unspentOutputs() {
+        return outputs().filter(this::isUnspent);
+    }
 
-        for (Transaction tx : transactions) {
-            allInputs.addAll(tx.getInputs());
-        }
-
-        for (Transaction tx : transactions) {
-            List<TransactionOutput> outputs = tx.getOutputs();
-            for (int outputIndex = 0; outputIndex < outputs.size(); outputIndex++) {
-                TransactionOutput output = outputs.get(outputIndex);
-                if (recipient.equals(output.getRecipient()) &&
-                        !allInputs.contains(TransactionInput.of(tx.getId(), outputIndex))) {
-                    unspent.add(output);
-                }
-            }
-        }
-
-        return unspent;
+    public Stream<TransactionOutput> unspentOutputs(Recipient recipient) {
+        return unspentOutputs().filter(output -> output.getRecipient().equals(recipient));
     }
 
     @Override
     public double balance(Recipient recipient) {
-        return unspent(recipient).stream().collect(Collectors.summingDouble(TransactionOutput::getAmount));
+        return unspentOutputs(recipient).mapToDouble(TransactionOutput::getAmount).sum();
+    }
+
+    private Transaction validated(Transaction transaction) {
+        if (transaction.inputs().anyMatch(this::isSpent)) {
+            throw new InvalidTransactionException("double spend");
+        }
+        return transaction;
+    }
+
+    private boolean isSpent(TransactionInput input) {
+        return transactions().flatMap(Transaction::inputs).anyMatch(input::equals);
+    }
+
+    private boolean isUnspent(TransactionOutput output) {
+        return !isSpent(TransactionInput.of(output.getTxId(), output.getIndex()));
     }
 }

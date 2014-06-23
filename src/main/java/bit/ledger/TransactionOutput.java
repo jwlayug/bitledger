@@ -27,13 +27,24 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class TransactionOutput {
 
+    private final int txId;
+    private final int index;
     private final double amount;
-
     private final Recipient recipient;
 
-    private TransactionOutput(double amount, Recipient recipient) {
+    public TransactionOutput(int txId, int index, double amount, Recipient recipient) {
+        this.txId = txId;
+        this.index = index;
         this.amount = amount;
         this.recipient = recipient;
+    }
+
+    public int getTxId() {
+        return txId;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     public double getAmount() {
@@ -44,7 +55,24 @@ public class TransactionOutput {
         return recipient;
     }
 
-    public static TransactionOutput of(double amount, Recipient recipient) {
-        return new TransactionOutput(amount, recipient);
+    public static TransactionOutput.Data of(double amount, Recipient recipient) {
+        return new TransactionOutput.Data(amount, recipient);
     }
+
+
+    public static TransactionOutput of(int txId, int index, TransactionOutput.Data data) {
+        return new TransactionOutput(txId, index, data.amount, data.recipient);
+    }
+
+
+    public static class Data {
+        private final double amount;
+        private final Recipient recipient;
+
+        private Data(double amount, Recipient recipient) {
+            this.amount = amount;
+            this.recipient = recipient;
+        }
+    }
+
 }
