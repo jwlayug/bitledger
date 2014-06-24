@@ -27,7 +27,7 @@ public class ZmqMain {
 
         for (String address : new String[]{
                 "inproc://endpoint",
-                "tcp://localhost:2121",
+                "tcp://127.0.0.1:2121",
                 "ipc://endpoint"
         }) {
             sendAndReceive(address);
