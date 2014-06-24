@@ -1,4 +1,4 @@
-/*
+package bit.ledger;/*
  * Copyright 2014 Bitledger
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Experiments with ZeroMQ based on reading through the guide at http://zguide.zeromq.org.
  */
-public class ZmqMain {
+public class ZmqExperiments {
 
     public static void main(String... args) throws InterruptedException {
 
