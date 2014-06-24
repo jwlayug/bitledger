@@ -22,6 +22,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Experiments with ZeroMQ based on reading through the guide at http://zguide.zeromq.org.
+ */
 public class ZmqMain {
 
     public static void main(String... args) throws InterruptedException {
