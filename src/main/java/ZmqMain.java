@@ -16,6 +16,7 @@
 
 import org.zeromq.ZMQ;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -27,18 +28,20 @@ public class ZmqMain {
 
         for (String address : new String[]{
                 "inproc://endpoint",
+                "ipc://endpoint",
                 "tcp://127.0.0.1:2121",
-                "ipc://endpoint"
         }) {
+            Instant start = Instant.now();
             sendAndReceive(address);
+            Instant finish = Instant.now();
+            System.out.printf("%d: %s\n", finish.toEpochMilli() - start.toEpochMilli(), address);
         }
     }
 
     private static void sendAndReceive(String address) throws InterruptedException {
 
-        System.out.println("sending and receiving message at: " + address);
-
         byte[] msg = new byte[]{1, 2, 3};
+        byte[] end = new byte[]{'e', 'n', 'd'};
 
         ZMQ.Context context = ZMQ.context(1);
 
@@ -46,20 +49,26 @@ public class ZmqMain {
 
         executor.execute(() -> {
             ZMQ.Socket server = context.socket(ZMQ.REP);
-            System.out.println("binding server");
             server.bind(address);
-            byte[] recMsg = server.recv(0);
-            System.out.println(Arrays.equals(msg, recMsg) ? "RECD" : "FAIL");
+            byte[] recMsg;
+            do {
+                recMsg = server.recv(0);
+                server.send("");
+            } while (!Arrays.equals(end, recMsg));
             server.close();
         });
 
         executor.schedule(() -> {
             ZMQ.Socket client = context.socket(ZMQ.REQ);
-            System.out.println("connecting client");
             client.connect(address);
-            client.send(msg, 0);
+            for (int i = 1; i <= 100_000; i++) {
+                client.send(msg, 0);
+                client.recv();
+            }
+            client.send(end, 0);
+            client.recv();
             client.close();
-        }, address.startsWith("inproc") ? 1 : 0, TimeUnit.SECONDS);
+        }, address.startsWith("inproc") ? 100 : 0, TimeUnit.MILLISECONDS);
 
         executor.shutdown();
         executor.awaitTermination(10, TimeUnit.SECONDS);
