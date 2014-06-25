@@ -53,7 +53,7 @@ public class NodeTests {
 
 interface Node {
 
-    public enum Status { NEW, STARTED, STOPPED, CRASHED }
+    public enum Status { NEW, STARTED, STOPPED }
 
     void start();
 
@@ -71,7 +71,7 @@ abstract class AbstractNode implements Node {
     private final ExecutorService executor = Executors.newFixedThreadPool(1);
 
     private Status status = Status.NEW;
-    private boolean canRecieve = true;
+    private boolean canReceive = true;
 
     protected void onStart() {
         System.out.println("AbstractNode.onStart");
@@ -97,8 +97,8 @@ abstract class AbstractNode implements Node {
         //Runtime.getRuntime().addShutdownHook(new Thread(() -> { System.out.println("shut. it. down."); }));
 
         executor.execute(() -> {
-            while (!Thread.currentThread().isInterrupted() && canRecieve) {
-                canRecieve = receive();
+            while (!Thread.currentThread().isInterrupted() && canReceive) {
+                canReceive = receive();
             }
         });
     }
