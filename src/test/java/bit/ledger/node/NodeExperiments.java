@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package bit.ledger;
+package bit.ledger.node;
 
 import lombok.ToString;
 import org.zeromq.ZMQ;
