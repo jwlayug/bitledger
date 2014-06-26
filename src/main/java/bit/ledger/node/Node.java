@@ -31,9 +31,9 @@ public class Node implements IDetachedRunnable {
 
     private final ZContext context = new ZContext();
     private final Socket socket = context.createSocket(ZMQ.REP);
-    public final List<String> items = new ArrayList<>();
-    public final Network network;
-    public final String address;
+    private final Network network;
+    private final String address;
+    private final List<String> items = new ArrayList<>();
 
     public Node(Network network) {
         this.network = network;
@@ -51,8 +51,22 @@ public class Node implements IDetachedRunnable {
 
     private void receive() {
         ZMsg msg = ZMsg.recvMsg(socket);
-        items.add(msg.popString());
-        ZMsg ack = ZMsg.newStringMsg("ACK");
-        ack.send(socket);
+        assert msg.size() == 1;
+        handle(msg.popString());
+    }
+
+    private void handle(String message) {
+        if (message.startsWith("item:")) {
+            items.add(message);
+            ZMsg.newStringMsg("ACK").send(socket);
+        } else if (message.equals("count")) {
+            ZMsg.newStringMsg("" + items.size()).send(socket);
+        } else {
+            throw new IllegalArgumentException("Unknown message: [" + message + "]");
+        }
+    }
+
+    public String getAddress() {
+        return address;
     }
 }
