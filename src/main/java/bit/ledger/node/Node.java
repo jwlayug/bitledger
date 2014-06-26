@@ -43,15 +43,9 @@ public class Node implements IDetachedRunnable {
     public void run(Object... args) {
         socket.bind(address);
         while (!Thread.currentThread().isInterrupted()) {
-            receive();
+            handle(ZMsg.recvMsg(socket).popString());
         }
         context.destroy();
-    }
-
-    private void receive() {
-        ZMsg msg = ZMsg.recvMsg(socket);
-        assert msg.size() == 1;
-        handle(msg.popString());
     }
 
     private void handle(String message) {
