@@ -41,6 +41,8 @@ public class Node implements IDetachedRunnable {
 
     @Override
     public void run(Object... args) {
+        Thread.currentThread().setUncaughtExceptionHandler((t, e) -> context.destroy());
+
         replySocket.bind(address);
         while (!Thread.currentThread().isInterrupted()) {
             ZMsg reply = handle(ZMsg.recvMsg(replySocket));
