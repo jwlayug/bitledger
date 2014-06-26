@@ -77,7 +77,7 @@ public class FloodFillTests {
         ZeroMQSocketNode node2 = new ZeroMQSocketNode("inproc://node2", context);
         node2.start();
 
-        node2.addPeer(node1.getAddress());
+        //node2.addPeer(node1.getAddress());
 
         node1.stop();
 
