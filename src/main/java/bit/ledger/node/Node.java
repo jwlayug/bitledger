@@ -60,7 +60,16 @@ public class Node implements IDetachedRunnable {
         else if (text.equals("count")) {
             return ZMsg.newStringMsg("" + items.size());
         }
-        throw new IllegalArgumentException("Unknown request: " + request);
+        else if (text.startsWith("get:")) {
+            String itemId = text.substring("get:".length());
+            //J-
+            return ZMsg.newStringMsg(items.stream()
+                    .filter(item -> item.equals("item:" + itemId))
+                    .findFirst()
+                    .orElse("error: item " + itemId + " not found!"));
+            //J+
+        }
+        return ZMsg.newStringMsg("unknown request: " + text);
     }
 
     /**

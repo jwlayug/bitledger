@@ -79,6 +79,9 @@ public class FloodFillTests {
 
             newStringMsg("get:2").send(requestSocket);
             assertThat(recvMsg(requestSocket).popString(), equalTo("item:2"));
+
+            newStringMsg("get:3").send(requestSocket);
+            assertThat(recvMsg(requestSocket).popString(), equalTo("error: item 3 not found!"));
         }
 
         Node node2 = new Node(network);
