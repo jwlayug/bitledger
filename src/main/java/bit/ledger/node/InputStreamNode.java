@@ -20,7 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * A {@link Node} implementation that accepts its messages via an {@link java.io.InputStream}, such as {@code System.in}
+ * A {@link Node} implementation that accepts its messages via an {@link
+ * java.io.InputStream}, such as {@code System.in}.
  */
 public class InputStreamNode extends AbstractNode {
 

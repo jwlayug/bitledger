@@ -28,7 +28,7 @@ public abstract class AbstractNode implements Node {
     private boolean canReceive = true;
 
     public AbstractNode() {
-         this(Executors.newSingleThreadExecutor());
+        this(Executors.newSingleThreadExecutor());
     }
 
     public AbstractNode(ExecutorService executor) {
@@ -45,6 +45,7 @@ public abstract class AbstractNode implements Node {
         System.out.println("AbstractNode.onStop");
     }
 
+    @Override
     public Status getStatus() {
         return status;
     }
@@ -61,16 +62,16 @@ public abstract class AbstractNode implements Node {
         //Runtime.getRuntime().addShutdownHook(new Thread(() -> { System.out.println("shut. it. down."); }));
 
         executor.execute(() -> {
-            while (!Thread.currentThread().isInterrupted() && canReceive) {
-                try {
-                    canReceive = receive();
-                } catch (InterruptedException e) {
-                    break;
+                while (!Thread.currentThread().isInterrupted() && canReceive) {
+                    try {
+                        canReceive = receive();
+                    } catch (InterruptedException e) {
+                        break;
+                    }
                 }
-            }
-            System.out.println("thread interrupted or otherwise cannot receive.");
-            status = Status.INTERRUPTED;
-        });
+                System.out.println("thread interrupted or otherwise cannot receive.");
+                status = Status.INTERRUPTED;
+            });
     }
 
     @Override

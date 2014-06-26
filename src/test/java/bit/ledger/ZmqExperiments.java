@@ -19,6 +19,7 @@ package bit.ledger;
 import org.zeromq.ZMQ;
 
 import java.time.Instant;
+
 import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -31,11 +32,11 @@ public class ZmqExperiments {
 
     public static void main(String... args) throws InterruptedException {
 
-        for (String address : new String[]{
+        for (String address : new String[] {
                 "inproc://endpoint",
                 "ipc://endpoint",
                 "tcp://127.0.0.1:2121",
-        }) {
+            }) {
             Instant start = Instant.now();
             sendAndReceive(address);
             Instant finish = Instant.now();
@@ -45,35 +46,36 @@ public class ZmqExperiments {
 
     private static void sendAndReceive(String address) throws InterruptedException {
 
-        byte[] msg = new byte[]{1, 2, 3};
-        byte[] end = new byte[]{'e', 'n', 'd'};
+        byte[] msg = new byte[] { 1, 2, 3 };
+        byte[] end = new byte[] { 'e', 'n', 'd' };
 
         ZMQ.Context context = ZMQ.context(1);
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
 
         executor.execute(() -> {
-            ZMQ.Socket server = context.socket(ZMQ.REP);
-            server.bind(address);
-            byte[] recMsg;
-            do {
-                recMsg = server.recv(0);
-                server.send("");
-            } while (!Arrays.equals(end, recMsg));
-            server.close();
-        });
+                ZMQ.Socket server = context.socket(ZMQ.REP);
+                server.bind(address);
+                byte[] recMsg;
+                do {
+                    recMsg = server.recv(0);
+                    server.send("");
+                } while (!Arrays.equals(end, recMsg));
+                server.close();
+            });
 
         executor.schedule(() -> {
-            ZMQ.Socket client = context.socket(ZMQ.REQ);
-            client.connect(address);
-            for (int i = 1; i <= 100_000; i++) {
-                client.send(msg, 0);
+                ZMQ.Socket client = context.socket(ZMQ.REQ);
+                client.connect(address);
+                for (int i = 1; i <= 100_000; i++) {
+                    client.send(msg, 0);
+                    client.recv();
+                }
+                client.send(end, 0);
                 client.recv();
-            }
-            client.send(end, 0);
-            client.recv();
-            client.close();
-        }, address.startsWith("inproc") ? 100 : 0, TimeUnit.MILLISECONDS);
+                client.close();
+            },
+            address.startsWith("inproc") ? 100 : 0, TimeUnit.MILLISECONDS);
 
         executor.shutdown();
         executor.awaitTermination(10, TimeUnit.SECONDS);

@@ -17,6 +17,7 @@
 package bit.ledger.node;
 
 import lombok.ToString;
+
 import org.zeromq.ZMQ;
 
 import java.util.ArrayList;
@@ -27,8 +28,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A {@link Node} implementation that accepts its messages via a ZeroMQ
- * {@link org.zeromq.ZMQ.Socket Socket}.
+ * A {@link Node} implementation that accepts its messages via a ZeroMQ {@link
+ * org.zeromq.ZMQ.Socket Socket}.
  */
 @ToString(of = "address")
 public class ZeroMQSocketNode extends AbstractNode {

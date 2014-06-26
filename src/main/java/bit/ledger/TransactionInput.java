@@ -36,8 +36,11 @@ public class TransactionInput {
     }
 
     /**
-     * @param txid the ID of an earlier {@link Transaction} with an output that this input will spend
-     * @param outputIndex the index of the {@link TransactionOutput} to be spent by this input.
+     * @param txid the ID of an earlier {@link Transaction} with an output that this input
+     *             will spend
+     * @param outputIndex the index of the {@link TransactionOutput} to be spent by this
+     *                    input.
+     *
      * @return a new immutable {@link TransactionInput}
      */
     public static TransactionInput of(int txid, int outputIndex) {

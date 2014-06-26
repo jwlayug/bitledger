@@ -19,6 +19,7 @@ package bit.ledger;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.*;
+
 import static org.junit.Assert.*;
 
 /**
@@ -34,7 +35,7 @@ public class JdkAssertionsTests {
     }
 
     @Test
-    @SuppressWarnings({"ConstantConditions", "AssertWithSideEffects", "UnusedAssignment"})
+    @SuppressWarnings({ "ConstantConditions", "AssertWithSideEffects", "UnusedAssignment" })
     public void viaActualAssert() {
         boolean assertionsEnabled = false;
         assert assertionsEnabled = true;

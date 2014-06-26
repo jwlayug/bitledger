@@ -33,8 +33,6 @@ public class Wallet {
     }
 
     public double balance() {
-        return recipients.stream()
-                .mapToDouble(ledger::balance)
-                .sum();
+        return recipients.stream().mapToDouble(ledger::balance).sum();
     }
 }

@@ -17,15 +17,18 @@
 package bit.ledger.node;
 
 import com.google.common.util.concurrent.MoreExecutors;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
+
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 
 import static org.hamcrest.CoreMatchers.*;
+
 import static org.junit.Assert.*;
 
 /**

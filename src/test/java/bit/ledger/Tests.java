@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+
 import static org.junit.Assert.assertThat;
 
 /**
@@ -55,8 +56,7 @@ public class Tests {
                 txid.incrementAndGet(),
                 Collections.emptyList(),
                 Arrays.asList(
-                        TransactionOutput.of(100, alice_1)
-                ));
+                    TransactionOutput.of(100, alice_1)));
         ledger.add(tx1);
 
         assertThat(ledger.balance(alice_1), equalTo(100d));
@@ -71,10 +71,9 @@ public class Tests {
                 txid.incrementAndGet(),
                 Arrays.asList(TransactionInput.of(tx1.getId(), 0)), // spend the original coinbase tx output
                 Arrays.asList(
-                        TransactionOutput.of(25d, bob_1),           // pay bob 25 units
-                        TransactionOutput.of(75d, alice_2)          // spend remainder to change address
-                )
-        );
+                    TransactionOutput.of(25d, bob_1), // pay bob 25 units
+                    TransactionOutput.of(75d, alice_2) // spend remainder to change address
+                    ));
         ledger.add(tx2);
 
         // crawl the ledger and sum the value of all transactions
@@ -96,9 +95,7 @@ public class Tests {
                 txid.incrementAndGet(),
                 Arrays.asList(TransactionInput.of(tx1.getId(), 0)), // try to double-spend the original tx
                 Arrays.asList(
-                        TransactionOutput.of(100d, charlie_1)
-                )
-        );
+                    TransactionOutput.of(100d, charlie_1)));
 
         try {
             ledger.add(tx3);

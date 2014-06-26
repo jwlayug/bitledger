@@ -17,11 +17,14 @@
 package bit.ledger.node;
 
 import lombok.ToString;
+
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQException;
+
 import zmq.ZError;
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,44 +47,44 @@ public class NodeExperiments {
 
         socket.bind("inproc://foo");
         executor.execute(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                try {
-                    String msg = socket.recvStr();
-                    System.out.println("msg = " + msg);
-                } catch (ZMQException e) {
-                    if (e.getErrorCode() == ZMQ.Error.ETERM.getCode()) {
-                        System.out.println("context shutdown. as expected.");
-                        //e.printStackTrace(System.err);
-                        break;
-                    } else {
-                        e.printStackTrace(System.err);
+                while (!Thread.currentThread().isInterrupted()) {
+                    try {
+                        String msg = socket.recvStr();
+                        System.out.println("msg = " + msg);
+                    } catch (ZMQException e) {
+                        if (e.getErrorCode() == ZMQ.Error.ETERM.getCode()) {
+                            System.out.println("context shutdown. as expected.");
+                            //e.printStackTrace(System.err);
+                            break;
+                        } else {
+                            e.printStackTrace(System.err);
+                        }
                     }
                 }
-            }
-            System.out.println(Thread.currentThread() + " was interrupted. Exit.");
-        });
+                System.out.println(Thread.currentThread() + " was interrupted. Exit.");
+            });
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                System.out.println("calling socket.close()");
-                socket.close();
-                System.out.println("calling context.close()");
-                context.close();
+                @Override
+                public void run() {
+                    System.out.println("calling socket.close()");
+                    socket.close();
+                    System.out.println("calling context.close()");
+                    context.close();
 
-                System.out.println("calling shutdownNow");
-                List<Runnable> incomplete = executor.shutdownNow();
-                System.out.println(incomplete.size() + " runnables are incomplete");
-                System.out.println("calling awaitTermination");
-                boolean result = false;
-                try {
-                    result = executor.awaitTermination(2, TimeUnit.SECONDS);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    System.out.println("calling shutdownNow");
+                    List<Runnable> incomplete = executor.shutdownNow();
+                    System.out.println(incomplete.size() + " runnables are incomplete");
+                    System.out.println("calling awaitTermination");
+                    boolean result = false;
+                    try {
+                        result = executor.awaitTermination(2, TimeUnit.SECONDS);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println("result = " + result);
                 }
-                System.out.println("result = " + result);
-            }
-        });
+            });
 
         System.out.println("Everything is running. Press ctrl-c at any time stop.");
     }
@@ -94,22 +97,22 @@ public class NodeExperiments {
 
         socket.bind("inproc://foo");
         executor.execute(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                try {
-                    String msg = socket.recvStr();
-                    System.out.println("msg = " + msg);
-                } catch (ZMQException e) {
-                    if (e.getErrorCode() == ZError.ETERM) {
-                        System.out.println("context shutdown. as expected.");
-                        //e.printStackTrace(System.err);
-                        break;
-                    } else {
-                        e.printStackTrace(System.err);
+                while (!Thread.currentThread().isInterrupted()) {
+                    try {
+                        String msg = socket.recvStr();
+                        System.out.println("msg = " + msg);
+                    } catch (ZMQException e) {
+                        if (e.getErrorCode() == ZError.ETERM) {
+                            System.out.println("context shutdown. as expected.");
+                            //e.printStackTrace(System.err);
+                            break;
+                        } else {
+                            e.printStackTrace(System.err);
+                        }
                     }
                 }
-            }
-            System.out.println(Thread.currentThread() + " was interrupted. Exit.");
-        });
+                System.out.println(Thread.currentThread() + " was interrupted. Exit.");
+            });
 
         // give the task above a moment to establish the blocking recv call
         TimeUnit.SECONDS.sleep(1);
@@ -132,17 +135,17 @@ public class NodeExperiments {
         ExecutorService executor = Executors.newFixedThreadPool(1);
 
         executor.execute(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                try {
-                    System.out.println("Enter a number: ");
-                    int n = System.in.read();
-                    System.out.println("you entered: " + n);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                while (!Thread.currentThread().isInterrupted()) {
+                    try {
+                        System.out.println("Enter a number: ");
+                        int n = System.in.read();
+                        System.out.println("you entered: " + n);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
-            System.out.println(Thread.currentThread() + " was interrupted. Exit.");
-        });
+                System.out.println(Thread.currentThread() + " was interrupted. Exit.");
+            });
 
         // give the task above a moment to prompt us at least once.
         TimeUnit.SECONDS.sleep(1);
@@ -166,17 +169,17 @@ public class NodeExperiments {
         ExecutorService executor = Executors.newFixedThreadPool(1);
 
         executor.execute(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                System.out.println(Thread.currentThread());
-                try {
-                    TimeUnit.MILLISECONDS.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    break;
+                while (!Thread.currentThread().isInterrupted()) {
+                    System.out.println(Thread.currentThread());
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        break;
+                    }
                 }
-            }
-            System.out.println(Thread.currentThread() + " was interrupted. Exit.");
-        });
+                System.out.println(Thread.currentThread() + " was interrupted. Exit.");
+            });
 
         TimeUnit.MILLISECONDS.sleep(1000);
 
@@ -218,12 +221,12 @@ class ZNode {
     public void start() {
         server.bind(address);
         executor.execute(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                String msg = server.recvStr();
-                System.out.println("msg = " + msg);
-                server.send("ACK");
-            }
-        });
+                while (!Thread.currentThread().isInterrupted()) {
+                    String msg = server.recvStr();
+                    System.out.println("msg = " + msg);
+                    server.send("ACK");
+                }
+            });
     }
 
     public void stop() {

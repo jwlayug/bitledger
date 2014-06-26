@@ -21,6 +21,7 @@ import org.junit.Test;
 import java.io.InputStream;
 
 import static org.hamcrest.CoreMatchers.*;
+
 import static org.junit.Assert.*;
 
 /**

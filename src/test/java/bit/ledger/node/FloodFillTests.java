@@ -22,6 +22,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import static org.hamcrest.CoreMatchers.*;
+
 import static org.junit.Assert.*;
 
 public class FloodFillTests {
