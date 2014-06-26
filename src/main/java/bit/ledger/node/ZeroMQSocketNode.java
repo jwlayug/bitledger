@@ -20,6 +20,8 @@ import lombok.ToString;
 
 import org.zeromq.ZMQ;
 
+import java.nio.channels.ClosedSelectorException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,8 +43,11 @@ public class ZeroMQSocketNode extends AbstractNode {
     private final List<ZMQ.Socket> peers = new ArrayList<>();
     private final List<String> items = new ArrayList<>();
 
+    private boolean sharedContext = true;
+
     public ZeroMQSocketNode(String address) {
         this(address, ZMQ.context(1));
+        sharedContext = false;
     }
 
     public ZeroMQSocketNode(String address, ZMQ.Context context) {
@@ -60,16 +65,27 @@ public class ZeroMQSocketNode extends AbstractNode {
     public void onStop() {
         peers.stream().forEach(ZMQ.Socket::close);
         server.close();
-        context.close();
+        if (!sharedContext)
+            context.close();
     }
 
     @Override
     public boolean receive() {
-        String msg = server.recvStr();
-        System.out.println("msg = " + msg);
-        server.send("ACK");
+        try {
+            String msg = server.recvStr();
+            server.send("ACK");
+            onReceive(msg);
+            return true;
+        } catch (ClosedSelectorException ex) {
+            // expected
+        } catch (Throwable t) {
+            t.printStackTrace(System.err);
+        }
+        return false;
+    }
+
+    private void onReceive(String msg) {
         items.add(msg);
-        return true;
     }
 
     public List<String> getItems() {
