@@ -35,6 +35,7 @@ public class Node implements IDetachedRunnable {
     private final ZContext context = new ZContext();
     private final Socket replySocket = context.createSocket(ZMQ.REP);
     private final List<String> items = new ArrayList<>();
+    private final List<Socket> peers = new ArrayList<>();
 
     public Node(Network network) {
         this.network = network;
@@ -46,6 +47,35 @@ public class Node implements IDetachedRunnable {
         Thread.currentThread().setUncaughtExceptionHandler((t, e) -> context.destroy());
 
         replySocket.bind(address);
+
+        //J-
+        network.discoverPeers().stream().forEach(address -> {
+            Socket peer = context.createSocket(ZMQ.REQ);
+            if (!this.address.equals(address)) { // don't connect to ourselves
+                peer.connect(address);
+                if (newStringMsg("count").send(peer)) {
+                    ZMsg reply = recvMsg(peer);
+                    Integer count = Integer.valueOf(reply.popString());
+                    if (count > items.size()) {
+                        for (int i = items.size(); i < count; i++) {
+                            if (newStringMsg("get:" + i).send(peer)) {
+                                ZMsg msg = recvMsg(peer);
+                                String text = msg.popString();
+                                if (text.startsWith("item:")) {
+                                    items.add(text);
+                                }
+                                else {
+                                    System.err.println("unexpected: " + text);
+                                }
+                            }
+                        }
+                    }
+                    peers.add(peer);
+                }
+            }
+        });
+        //J+
+
         while (!Thread.currentThread().isInterrupted()) {
             ZMsg reply = handle(recvMsg(replySocket));
             reply.send(replySocket);

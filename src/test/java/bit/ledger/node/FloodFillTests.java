@@ -69,10 +69,10 @@ public class FloodFillTests {
             assertThat(recvMsg(requestSocket).popString(), is("0"));
 
             // add a couple items ourselves
-            newStringMsg("item:1").send(requestSocket);
+            newStringMsg("item:0").send(requestSocket);
             assertThat(recvMsg(requestSocket).popString(), equalTo("ACK"));
 
-            newStringMsg("item:2").send(requestSocket);
+            newStringMsg("item:1").send(requestSocket);
             assertThat(recvMsg(requestSocket).popString(), equalTo("ACK"));
 
             // now should report having them
@@ -80,12 +80,12 @@ public class FloodFillTests {
             assertThat(recvMsg(requestSocket).popString(), is("2"));
 
             // get an item by its id
-            newStringMsg("get:2").send(requestSocket);
-            assertThat(recvMsg(requestSocket).popString(), equalTo("item:2"));
+            newStringMsg("get:0").send(requestSocket);
+            assertThat(recvMsg(requestSocket).popString(), equalTo("item:0"));
 
             // send a request for an item that doesn't exist, get a sensible error
-            newStringMsg("get:3").send(requestSocket);
-            assertThat(recvMsg(requestSocket).popString(), equalTo("error: item 3 not found!"));
+            newStringMsg("get:2").send(requestSocket);
+            assertThat(recvMsg(requestSocket).popString(), equalTo("error: item 2 not found!"));
 
             // send a totally unknown request, get a sensible error
             newStringMsg("bogus").send(requestSocket);
