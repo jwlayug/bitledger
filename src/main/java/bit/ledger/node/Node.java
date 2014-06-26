@@ -43,22 +43,22 @@ public class Node implements IDetachedRunnable {
     public void run(Object... args) {
         replySocket.bind(address);
         while (!Thread.currentThread().isInterrupted()) {
-            handle(ZMsg.recvMsg(replySocket).popString());
+            ZMsg reply = handle(ZMsg.recvMsg(replySocket));
+            reply.send(replySocket);
         }
         context.destroy();
     }
 
-    private void handle(String message) {
-        if (message.startsWith("item:")) {
-            items.add(message);
-            ZMsg.newStringMsg("ACK").send(replySocket);
+    private ZMsg handle(ZMsg request) {
+        String text = request.popString();
+        if (text.startsWith("item:")) {
+            items.add(text);
+            return ZMsg.newStringMsg("ACK");
         }
-        else if (message.equals("count")) {
-            ZMsg.newStringMsg("" + items.size()).send(replySocket);
+        else if (text.equals("count")) {
+            return ZMsg.newStringMsg("" + items.size());
         }
-        else {
-            throw new IllegalArgumentException("Unknown message: [" + message + "]");
-        }
+        throw new IllegalArgumentException("Unknown request: " + request);
     }
 
     /**
