@@ -22,6 +22,9 @@ import org.zeromq.ZMQ;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.*;
 
@@ -51,38 +54,47 @@ public class FloodFillTests {
 
      */
 
-    @Test
-    public void test() throws InterruptedException {
+    public static void main(String... args) throws InterruptedException {
 
-        ZMQ.Context context = ZMQ.context(1);
+        //ExecutorService executor = Executors.newFixedThreadPool(2);
 
-        ZeroMQSocketNode node1 = new ZeroMQSocketNode("inproc://node1", context);
+        Node node1 = new Node("ipc://node1");
+        node1.run();
+        //executor.execute(node1);
+        /*
 
-        node1.start();
+        assertThat(node1.items.size(), equalTo(0));
 
-        assertThat(node1.getItems().size(), equalTo(0));
+        { // add a couple items
+            ZMQ.Context context = ZMQ.context(1);
+            ZMQ.Socket socket = context.socket(ZMQ.REQ);
+            socket.connect(node1.address);
+            socket.send("item:1");
+            String response = socket.recvStr();
+            System.out.println("response = " + response);
+            socket.send("item:2");
+            socket.recvStr();
+            socket.close();
+        }
 
-        ZMQ.Socket socket = context.socket(ZMQ.REQ);
-        socket.connect(node1.getAddress());
-        socket.send("item:1");
-        String response = socket.recvStr();
-        System.out.println("response = " + response);
-        socket.send("item:2");
-        socket.recvStr();
-        socket.close();
-
-        assertThat(node1.getItems().size(), equalTo(2));
+        assertThat(node1.items.size(), equalTo(2));
 
 
-        ZeroMQSocketNode node2 = new ZeroMQSocketNode("inproc://node2", context);
-        node2.start();
+        //Node node2 = new Node("ipc://node2");
+        //executor.execute(node1);
 
         //node2.addPeer(node1.getAddress());
+        */
 
-        node1.stop();
+        /*
+        System.out.println("sleeping for 1 sec after executing node1");
+        TimeUnit.SECONDS.sleep(1);
 
-        node2.stop();
-
-        context.close();
+        System.out.println("calling shutdownNow");
+        executor.shutdownNow();
+        System.out.println("calling awaitTermination");
+        executor.awaitTermination(2, TimeUnit.SECONDS);
+        */
     }
+
 }
