@@ -91,7 +91,6 @@ public class FloodFillTests {
             newStringMsg("bogus").send(requestSocket);
             assertThat(recvMsg(requestSocket).popString(), equalTo("unknown request: bogus"));
         }
-
         {
             // create a second node, which should rapidly connect to the first
             // then synchronize with the state of its data
@@ -103,6 +102,16 @@ public class FloodFillTests {
             newStringMsg("count").send(requestSocket);
             assertThat(recvMsg(requestSocket).popString(), is("2"));
         }
-    }
+        {
+            // third node should fill everything based on the first peer found
+            // and should not overfill on querying the second.
+            Node node = new Node(network);
+            ZThread.start(node);
 
+            Socket requestSocket = node.createRequestSocket();
+
+            newStringMsg("count").send(requestSocket);
+            assertThat(recvMsg(requestSocket).popString(), is("2"));
+        }
+    }
 }

@@ -56,17 +56,15 @@ public class Node implements IDetachedRunnable {
                 if (newStringMsg("count").send(peer)) {
                     ZMsg reply = recvMsg(peer);
                     Integer count = Integer.valueOf(reply.popString());
-                    if (count > items.size()) {
-                        for (int i = items.size(); i < count; i++) {
-                            if (newStringMsg("get:" + i).send(peer)) {
-                                ZMsg msg = recvMsg(peer);
-                                String text = msg.popString();
-                                if (text.startsWith("item:")) {
-                                    items.add(text);
-                                }
-                                else {
-                                    System.err.println("unexpected: " + text);
-                                }
+                    for (int i = items.size(); i < count; i++) {
+                        if (newStringMsg("get:" + i).send(peer)) {
+                            ZMsg msg = recvMsg(peer);
+                            String text = msg.popString();
+                            if (text.startsWith("item:")) {
+                                items.add(text);
+                            }
+                            else {
+                                System.err.println("unexpected: " + text);
                             }
                         }
                     }
