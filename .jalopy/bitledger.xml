@@ -962,7 +962,7 @@
      <always>
       <after>
        <arrayElement>0</arrayElement>
-       <braceRight>false</braceRight>
+       <braceRight>true</braceRight>
       </after>
       <before>
        <braceLeft>false</braceLeft>

@@ -52,9 +52,11 @@ public class Node implements IDetachedRunnable {
         if (message.startsWith("item:")) {
             items.add(message);
             ZMsg.newStringMsg("ACK").send(socket);
-        } else if (message.equals("count")) {
+        }
+        else if (message.equals("count")) {
             ZMsg.newStringMsg("" + items.size()).send(socket);
-        } else {
+        }
+        else {
             throw new IllegalArgumentException("Unknown message: [" + message + "]");
         }
     }

@@ -60,7 +60,8 @@ public class ZmqExperiments {
                 do {
                     recMsg = server.recv(0);
                     server.send("");
-                } while (!Arrays.equals(end, recMsg));
+                }
+                while (!Arrays.equals(end, recMsg));
                 server.close();
             });
 

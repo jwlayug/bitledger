@@ -99,7 +99,8 @@ public class Tests {
 
         try {
             ledger.add(tx3);
-        } catch (InvalidTransactionException ex) {
+        }
+        catch (InvalidTransactionException ex) {
             assertThat(ex.getMessage(), equalTo("double spend"));
         }
 
