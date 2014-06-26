@@ -18,6 +18,7 @@ package bit.ledger.node;
 
 import org.junit.Test;
 
+import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 import org.zeromq.ZThread;
 
@@ -66,15 +67,13 @@ public class FloodFillTests {
 
         assertThat(node1.items.size(), equalTo(0));
 
-        { // add a couple items
-            ZMQ.Context context = ZMQ.context(1);
-            ZMQ.Socket socket = context.socket(ZMQ.REQ);
+        try (ZContext context = new ZContext()) {
+            ZMQ.Socket socket = context.createSocket(ZMQ.REQ);
             socket.connect(node1.address);
             socket.send("item:1");
             socket.recvStr();
             socket.send("item:2");
             socket.recvStr();
-            socket.close();
         }
 
         assertThat(node1.items.size(), equalTo(2));
