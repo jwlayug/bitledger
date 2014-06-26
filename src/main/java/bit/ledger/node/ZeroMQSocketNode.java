@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 /**
  * A {@link Node} implementation that accepts its messages via a ZeroMQ {@link
@@ -34,14 +35,20 @@ import java.util.concurrent.TimeUnit;
 @ToString(of = "address")
 public class ZeroMQSocketNode extends AbstractNode {
 
-    private final ZMQ.Context context = ZMQ.context(1);
-    private final ZMQ.Socket server = context.socket(ZMQ.REP);
-
+    private final ZMQ.Context context;
+    private final ZMQ.Socket server;
     private final String address;
     private final List<ZMQ.Socket> peers = new ArrayList<>();
+    private final List<String> items = new ArrayList<>();
 
     public ZeroMQSocketNode(String address) {
+        this(address, ZMQ.context(1));
+    }
+
+    public ZeroMQSocketNode(String address, ZMQ.Context context) {
         this.address = address;
+        this.context = context;
+        this.server = context.socket(ZMQ.REP);
     }
 
     @Override
@@ -61,7 +68,12 @@ public class ZeroMQSocketNode extends AbstractNode {
         String msg = server.recvStr();
         System.out.println("msg = " + msg);
         server.send("ACK");
+        items.add(msg);
         return true;
+    }
+
+    public List<String> getItems() {
+        return items;
     }
 
     public String getAddress() {

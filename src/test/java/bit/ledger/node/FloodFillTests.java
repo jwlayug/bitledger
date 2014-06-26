@@ -18,6 +18,8 @@ package bit.ledger.node;
 
 import org.junit.Test;
 
+import org.zeromq.ZMQ;
+
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -52,10 +54,25 @@ public class FloodFillTests {
     @Test
     public void test() throws InterruptedException {
 
-        Node node1 = new ZeroMQSocketNode("inproc://node1");
+        ZMQ.Context context = ZMQ.context(1);
+
+        ZeroMQSocketNode node1 = new ZeroMQSocketNode("inproc://node1", context);
 
         node1.start();
 
-        assertThat(1, equalTo(1));
+        assertThat(node1.getItems().size(), equalTo(0));
+
+        ZMQ.Socket socket = context.socket(ZMQ.REQ);
+        socket.connect(node1.getAddress());
+        socket.send("item:1");
+        String response = socket.recvStr();
+        System.out.println("response = " + response);
+        socket.send("item:2");
+        socket.recvStr();
+        socket.close();
+
+        assertThat(node1.getItems().size(), equalTo(2));
+
+        node1.stop();
     }
 }
