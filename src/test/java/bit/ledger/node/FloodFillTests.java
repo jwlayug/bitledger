@@ -27,7 +27,6 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import static org.zeromq.ZMQ.Socket;
-
 import static org.zeromq.ZMsg.*;
 
 public class FloodFillTests {

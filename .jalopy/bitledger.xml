@@ -114,7 +114,7 @@
     <type>log</type>
    </logging>
    <messages>
-    <autoShow>true</autoShow>
+    <autoShow>false</autoShow>
     <priority>
      <general>30000</general>
      <inspector>30000</inspector>
@@ -521,7 +521,7 @@
     <imports>
      <classRepositoryDirectory>repository</classRepositoryDirectory>
      <grouping>
-      <defaultDepth>3</defaultDepth>
+      <defaultDepth>2</defaultDepth>
       <packages>*:0|gnu:2|java:2|javax:2</packages>
       <static>bottom</static>
      </grouping>

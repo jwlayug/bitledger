@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.zeromq.ZMQ.Socket;
-
 import static org.zeromq.ZThread.IDetachedRunnable;
 
 public class Node implements IDetachedRunnable {
