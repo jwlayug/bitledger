@@ -84,7 +84,8 @@ public class FloodFillTests {
 
         Node node2 = new Node(network);
         ZThread.start(node2);
-        //node2.addPeer(node1.address);
+
+        assertThat(node2.items.size(), equalTo(0));
     }
 
 }
