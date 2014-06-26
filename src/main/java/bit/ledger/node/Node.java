@@ -32,10 +32,12 @@ public class Node implements IDetachedRunnable {
     private final ZContext context = new ZContext();
     private final Socket socket = context.createSocket(ZMQ.REP);
     public final List<String> items = new ArrayList<>();
+    public final Network network;
     public final String address;
 
-    public Node(String address) {
-        this.address = address;
+    public Node(Network network) {
+        this.network = network;
+        this.address = network.discoverAddress();
     }
 
     @Override

@@ -59,7 +59,9 @@ public class FloodFillTests {
     @Test
     public void test() throws InterruptedException {
 
-        Node node1 = new Node("ipc://node1");
+        Network network = new Network();
+
+        Node node1 = new Node(network);
         System.out.println("before start");
         ZThread.start(node1);
         System.out.println("after start");
@@ -80,7 +82,8 @@ public class FloodFillTests {
 
         assertThat(node1.items.size(), equalTo(2));
 
-        //Node node2 = new Node("ipc://node2");
+        Node node2 = new Node(network);
+        ZThread.start(node2);
         //node2.addPeer(node1.address);
     }
 
