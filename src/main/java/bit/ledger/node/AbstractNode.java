@@ -22,10 +22,20 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractNode implements Node {
 
-    private final ExecutorService executor = Executors.newFixedThreadPool(1);
+    private final ExecutorService executor;
 
     private Status status = Status.NEW;
     private boolean canReceive = true;
+
+    public AbstractNode() {
+         this(Executors.newSingleThreadExecutor());
+    }
+
+    public AbstractNode(ExecutorService executor) {
+        this.executor = executor;
+    }
+
+    protected abstract boolean receive() throws InterruptedException;
 
     protected void onStart() {
         System.out.println("AbstractNode.onStart");
@@ -40,7 +50,7 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
-    public void start() {
+    public final void start() {
         System.out.println("AbstractNode.start");
 
         status = Status.STARTED;
@@ -52,13 +62,19 @@ public abstract class AbstractNode implements Node {
 
         executor.execute(() -> {
             while (!Thread.currentThread().isInterrupted() && canReceive) {
-                canReceive = receive();
+                try {
+                    canReceive = receive();
+                } catch (InterruptedException e) {
+                    break;
+                }
             }
+            System.out.println("thread interrupted or otherwise cannot receive.");
+            status = Status.INTERRUPTED;
         });
     }
 
     @Override
-    public void stop() {
+    public final void stop() {
         switch (status) {
             case STOPPED:
                 return; // nothing to do here.

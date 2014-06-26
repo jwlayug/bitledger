@@ -18,13 +18,11 @@ package bit.ledger.node;
 
 public interface Node {
 
-    enum Status { NEW, STARTED, STOPPED }
+    enum Status { NEW, STARTED, INTERRUPTED, STOPPED }
 
     void start();
 
     void stop();
-
-    boolean receive();
 
     Status getStatus();
 }

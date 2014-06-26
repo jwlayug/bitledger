@@ -31,11 +31,10 @@ import java.util.concurrent.TimeUnit;
  * {@link org.zeromq.ZMQ.Socket Socket}.
  */
 @ToString(of = "address")
-public class ZeroMQSocketNode /*implements Node*/ {
+public class ZeroMQSocketNode extends AbstractNode {
 
     private final ZMQ.Context context = ZMQ.context(1);
     private final ZMQ.Socket server = context.socket(ZMQ.REP);
-    private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
     private final String address;
     private final List<ZMQ.Socket> peers = new ArrayList<>();
@@ -44,32 +43,24 @@ public class ZeroMQSocketNode /*implements Node*/ {
         this.address = address;
     }
 
-    public void start() {
+    @Override
+    public void onStart() {
         server.bind(address);
-        executor.execute(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                String msg = server.recvStr();
-                System.out.println("msg = " + msg);
-                server.send("ACK");
-            }
-        });
     }
 
-    public void stop() {
-        peers.parallelStream().forEach(ZMQ.Socket::close);
-        executor.shutdown();
-        try {
-            executor.awaitTermination(10, TimeUnit.SECONDS);
-        } catch (InterruptedException ex) {
-            throw new RuntimeException(ex);
-        }
+    @Override
+    public void onStop() {
+        peers.stream().forEach(ZMQ.Socket::close);
         server.close();
         context.close();
     }
 
-    //@Override
-    public void receive() {
-
+    @Override
+    public boolean receive() {
+        String msg = server.recvStr();
+        System.out.println("msg = " + msg);
+        server.send("ACK");
+        return true;
     }
 
     public String getAddress() {
