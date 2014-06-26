@@ -92,13 +92,17 @@ public class FloodFillTests {
             assertThat(recvMsg(requestSocket).popString(), equalTo("unknown request: bogus"));
         }
 
-        /*
-        Node node2 = new Node(network);
-        ZThread.start(node2);
+        {
+            // create a second node, which should rapidly connect to the first
+            // then synchronize with the state of its data
+            Node node = new Node(network);
+            ZThread.start(node);
 
-        newStringMsg("count").send(requestSocket);
-        assertThat(recvMsg(requestSocket).popString(), is("2"));
-        */
+            Socket requestSocket = node.createRequestSocket();
+
+            newStringMsg("count").send(requestSocket);
+            assertThat(recvMsg(requestSocket).popString(), is("2"));
+        }
     }
 
 }
