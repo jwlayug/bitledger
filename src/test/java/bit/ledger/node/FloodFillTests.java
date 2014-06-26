@@ -19,6 +19,7 @@ package bit.ledger.node;
 import org.junit.Test;
 
 import org.zeromq.ZMQ;
+import org.zeromq.ZThread;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -54,14 +55,14 @@ public class FloodFillTests {
 
      */
 
-    public static void main(String... args) throws InterruptedException {
-
-        //ExecutorService executor = Executors.newFixedThreadPool(2);
+    //public static void main(String... args) throws InterruptedException {
+    @Test
+    public void test() throws InterruptedException {
 
         Node node1 = new Node("ipc://node1");
-        node1.run();
-        //executor.execute(node1);
-        /*
+        System.out.println("before start");
+        ZThread.start(node1);
+        System.out.println("after start");
 
         assertThat(node1.items.size(), equalTo(0));
 
@@ -79,22 +80,8 @@ public class FloodFillTests {
 
         assertThat(node1.items.size(), equalTo(2));
 
-
         //Node node2 = new Node("ipc://node2");
-        //executor.execute(node1);
-
-        //node2.addPeer(node1.getAddress());
-        */
-
-        /*
-        System.out.println("sleeping for 1 sec after executing node1");
-        TimeUnit.SECONDS.sleep(1);
-
-        System.out.println("calling shutdownNow");
-        executor.shutdownNow();
-        System.out.println("calling awaitTermination");
-        executor.awaitTermination(2, TimeUnit.SECONDS);
-        */
+        //node2.addPeer(node1.address);
     }
 
 }

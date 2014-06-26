@@ -16,40 +16,34 @@
 
 package bit.ledger.node;
 
+import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
-
-import zmq.ZError;
-
-import java.nio.channels.ClosedByInterruptException;
-import java.nio.channels.ClosedSelectorException;
+import org.zeromq.ZMsg;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Node implements Runnable {
+import static org.zeromq.ZMQ.Socket;
 
-    private final ZMQ.Context context;
-    private final ZMQ.Socket server;
-    //private final List<ZMQ.Socket> peers = new ArrayList<>();
+import static org.zeromq.ZThread.IDetachedRunnable;
 
-    public final String address;
+public class Node implements IDetachedRunnable {
+
+    private final ZContext context = new ZContext();
+    private final Socket socket = context.createSocket(ZMQ.REP);
     public final List<String> items = new ArrayList<>();
+    public final String address;
 
     public Node(String address) {
         this.address = address;
-        this.context = ZMQ.context(1);
-        this.server = context.socket(ZMQ.REP);
     }
 
     @Override
-    public void run() {
+    public void run(Object... args) {
         System.out.println("Node.start");
 
         System.out.println("Node1: binding to " + address);
-        server.bind(address);
-
-        System.out.println("Node1: registering shutdown hook");
-        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+        socket.bind(address);
 
         while (!Thread.currentThread().isInterrupted()) {
             System.out.println("Node1: about to receive");
@@ -57,48 +51,15 @@ public class Node implements Runnable {
             System.out.println("Node1: called receive");
         }
         System.out.println("thread interrupted or otherwise cannot receive.");
+        context.destroy();
     }
 
     private void receive() {
-        try {
-            System.out.println("Node1: about to recvStr");
-            String msg = server.recvStr();
-            System.out.println("Node1: about to send ACK");
-            server.send("ACK");
-            System.out.println("Node1: sent ACK");
-            items.add(msg);
-            System.out.println("Node1: added msg to items");
-        } catch (ZError.IOException ex) {
-            if (ex.getCause() instanceof ClosedByInterruptException) {
-                // expected.
-
-                System.out.println("DEBUG: receive interrupted. Exiting.");
-                return;
-            }
-            // something unexpected happened.
-            throw new RuntimeException(ex);
-        }
-    }
-
-    /*
-    public void addPeer(String address) {
-        ZMQ.Socket peer = context.socket(ZMQ.REQ);
-        peers.add(peer);
-        System.out.println("before");
-        peer.connect(address);
-        System.out.println("after");
-        //peer.send("SYN1");
-        //System.out.println(Arrays.toString(peer.recv()));
-        //peer.send("SYN2");
-        //System.out.println(Arrays.toString(peer.recv()));
-    }
-    */
-
-    private void shutdown() {
-        System.out.println("Node.shutdown");
-
-        //peers.stream().forEach(ZMQ.Socket::close);
-        server.close();
-        //context.close();
+        System.out.println("about to recvMsg");
+        ZMsg msg = ZMsg.recvMsg(socket);
+        System.out.println("after recvMsg: " + msg);
+        items.add(msg.popString());
+        ZMsg ack = ZMsg.newStringMsg("ACK");
+        ack.send(socket);
     }
 }
