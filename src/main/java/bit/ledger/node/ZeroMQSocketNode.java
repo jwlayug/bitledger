@@ -99,10 +99,12 @@ public class ZeroMQSocketNode extends AbstractNode {
     public void addPeer(String address) {
         ZMQ.Socket peer = context.socket(ZMQ.REQ);
         peers.add(peer);
+        System.out.println("before");
         peer.connect(address);
-        peer.send("SYN1");
-        System.out.println(Arrays.toString(peer.recv()));
-        peer.send("SYN2");
-        System.out.println(Arrays.toString(peer.recv()));
+        System.out.println("after");
+        //peer.send("SYN1");
+        //System.out.println(Arrays.toString(peer.recv()));
+        //peer.send("SYN2");
+        //System.out.println(Arrays.toString(peer.recv()));
     }
 }
