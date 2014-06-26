@@ -646,7 +646,7 @@
        <level>true</level>
        <order>level|count|default|copy</order>
       </constructor>
-      <enable>false</enable>
+      <enable>true</enable>
       <enum>
        <enable>false</enable>
        <level>true</level>
