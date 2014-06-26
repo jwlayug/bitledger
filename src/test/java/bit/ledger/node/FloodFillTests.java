@@ -23,12 +23,6 @@ import org.zeromq.ZMQ;
 import org.zeromq.ZMsg;
 import org.zeromq.ZThread;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 import static org.hamcrest.CoreMatchers.*;
 
 import static org.junit.Assert.*;
