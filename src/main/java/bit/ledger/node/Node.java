@@ -66,8 +66,8 @@ public class Node implements IDetachedRunnable {
      *         used for testing.
      */
     public Socket createRequestSocket() {
-        Socket req = context.createSocket(ZMQ.REQ);
-        req.connect(address);
-        return req;
+        Socket requestSocket = context.createSocket(ZMQ.REQ);
+        requestSocket.connect(address);
+        return requestSocket;
     }
 }
