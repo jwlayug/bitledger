@@ -57,26 +57,29 @@ public class FloodFillTests {
 
         Network network = new Network();
 
-        Node node1 = new Node(network);
-        ZThread.start(node1);
+        {
+            // create and start a node
+            Node node = new Node(network);
+            ZThread.start(node);
 
-        Socket socket = node1.createRequestSocket();
+            Socket requestSocket = node.createRequestSocket();
 
-        newStringMsg("count").send(socket);
-        assertThat(recvMsg(socket).popString(), is("0"));
+            // should have no items at start
+            newStringMsg("count").send(requestSocket);
+            assertThat(recvMsg(requestSocket).popString(), is("0"));
 
-        newStringMsg("item:1").send(socket);
-        assertThat(recvMsg(socket).popString(), equalTo("ACK"));
+            newStringMsg("item:1").send(requestSocket);
+            assertThat(recvMsg(requestSocket).popString(), equalTo("ACK"));
 
-        newStringMsg("item:2").send(socket);
-        assertThat(recvMsg(socket).popString(), equalTo("ACK"));
+            newStringMsg("item:2").send(requestSocket);
+            assertThat(recvMsg(requestSocket).popString(), equalTo("ACK"));
 
-        //assertThat(node1.items.size(), equalTo(2));
+            newStringMsg("count").send(requestSocket);
+            assertThat(recvMsg(requestSocket).popString(), is("2"));
+        }
 
         Node node2 = new Node(network);
         ZThread.start(node2);
-
-        //assertThat(node2.items.size(), equalTo(0));
     }
 
 }

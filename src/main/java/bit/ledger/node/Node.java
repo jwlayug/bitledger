@@ -28,10 +28,10 @@ import static org.zeromq.ZThread.IDetachedRunnable;
 
 public class Node implements IDetachedRunnable {
 
-    private final ZContext context = new ZContext();
-    private final Socket socket = context.createSocket(ZMQ.REP);
     private final Network network;
     private final String address;
+    private final ZContext context = new ZContext();
+    private final Socket replySocket = context.createSocket(ZMQ.REP);
     private final List<String> items = new ArrayList<>();
 
     public Node(Network network) {
@@ -41,9 +41,9 @@ public class Node implements IDetachedRunnable {
 
     @Override
     public void run(Object... args) {
-        socket.bind(address);
+        replySocket.bind(address);
         while (!Thread.currentThread().isInterrupted()) {
-            handle(ZMsg.recvMsg(socket).popString());
+            handle(ZMsg.recvMsg(replySocket).popString());
         }
         context.destroy();
     }
@@ -51,10 +51,10 @@ public class Node implements IDetachedRunnable {
     private void handle(String message) {
         if (message.startsWith("item:")) {
             items.add(message);
-            ZMsg.newStringMsg("ACK").send(socket);
+            ZMsg.newStringMsg("ACK").send(replySocket);
         }
         else if (message.equals("count")) {
-            ZMsg.newStringMsg("" + items.size()).send(socket);
+            ZMsg.newStringMsg("" + items.size()).send(replySocket);
         }
         else {
             throw new IllegalArgumentException("Unknown message: [" + message + "]");
