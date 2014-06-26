@@ -20,12 +20,15 @@ import org.junit.Test;
 
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
-import org.zeromq.ZMsg;
 import org.zeromq.ZThread;
 
 import static org.hamcrest.CoreMatchers.*;
 
 import static org.junit.Assert.*;
+
+import static org.zeromq.ZMQ.Socket;
+
+import static org.zeromq.ZMsg.*;
 
 public class FloodFillTests {
 
@@ -61,18 +64,17 @@ public class FloodFillTests {
         ZThread.start(node1);
 
         try (ZContext context = new ZContext()) {
-            ZMQ.Socket socket = context.createSocket(ZMQ.REQ);
+            Socket socket = context.createSocket(ZMQ.REQ);
             socket.connect(node1.getAddress());
 
-            ZMsg.newStringMsg("count").send(socket);
-            ZMsg msg = ZMsg.recvMsg(socket);
-            assertThat(msg.size(), is(1));
-            assertThat(msg.popString(), is("0"));
+            newStringMsg("count").send(socket);
+            assertThat(recvMsg(socket).popString(), is("0"));
 
-            socket.send("item:1");
-            socket.recvStr();
-            socket.send("item:2");
-            socket.recvStr();
+            newStringMsg("item:1").send(socket);
+            assertThat(recvMsg(socket).popString(), equalTo("ACK"));
+
+            newStringMsg("item:2").send(socket);
+            assertThat(recvMsg(socket).popString(), equalTo("ACK"));
         }
 
         //assertThat(node1.items.size(), equalTo(2));
