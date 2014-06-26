@@ -68,24 +68,37 @@ public class FloodFillTests {
             newStringMsg("count").send(requestSocket);
             assertThat(recvMsg(requestSocket).popString(), is("0"));
 
+            // add a couple items ourselves
             newStringMsg("item:1").send(requestSocket);
             assertThat(recvMsg(requestSocket).popString(), equalTo("ACK"));
 
             newStringMsg("item:2").send(requestSocket);
             assertThat(recvMsg(requestSocket).popString(), equalTo("ACK"));
 
+            // now should report having them
             newStringMsg("count").send(requestSocket);
             assertThat(recvMsg(requestSocket).popString(), is("2"));
 
+            // get an item by its id
             newStringMsg("get:2").send(requestSocket);
             assertThat(recvMsg(requestSocket).popString(), equalTo("item:2"));
 
+            // send a request for an item that doesn't exist, get a sensible error
             newStringMsg("get:3").send(requestSocket);
             assertThat(recvMsg(requestSocket).popString(), equalTo("error: item 3 not found!"));
+
+            // send a totally unknown request, get a sensible error
+            newStringMsg("bogus").send(requestSocket);
+            assertThat(recvMsg(requestSocket).popString(), equalTo("unknown request: bogus"));
         }
 
+        /*
         Node node2 = new Node(network);
         ZThread.start(node2);
+
+        newStringMsg("count").send(requestSocket);
+        assertThat(recvMsg(requestSocket).popString(), is("2"));
+        */
     }
 
 }
