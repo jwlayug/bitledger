@@ -883,7 +883,7 @@
        <methodDeclaration>false</methodDeclaration>
        <switch>true</switch>
        <synchronized>true</synchronized>
-       <try>false</try>
+       <try>true</try>
        <while>true</while>
       </parentheses>
       <question>
@@ -1082,7 +1082,7 @@
     <formatOnCheckin>false</formatOnCheckin>
     <formatOnGeneration>false</formatOnGeneration>
     <formatOnLoad>false</formatOnLoad>
-    <formatOnSave>false</formatOnSave>
+    <formatOnSave>true</formatOnSave>
     <keepEditorState>false</keepEditorState>
     <lineSeparator>AUTO</lineSeparator>
     <testFormatting>false</testFormatting>
