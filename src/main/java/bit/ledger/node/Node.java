@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.zeromq.ZMQ.Socket;
+import static org.zeromq.ZMsg.newStringMsg;
+import static org.zeromq.ZMsg.recvMsg;
 import static org.zeromq.ZThread.IDetachedRunnable;
 
 public class Node implements IDetachedRunnable {
@@ -45,7 +47,7 @@ public class Node implements IDetachedRunnable {
 
         replySocket.bind(address);
         while (!Thread.currentThread().isInterrupted()) {
-            ZMsg reply = handle(ZMsg.recvMsg(replySocket));
+            ZMsg reply = handle(recvMsg(replySocket));
             reply.send(replySocket);
         }
         context.destroy();
@@ -55,21 +57,21 @@ public class Node implements IDetachedRunnable {
         String text = request.popString();
         if (text.startsWith("item:")) {
             items.add(text);
-            return ZMsg.newStringMsg("ACK");
+            return newStringMsg("ACK");
         }
         else if (text.equals("count")) {
-            return ZMsg.newStringMsg("" + items.size());
+            return newStringMsg("" + items.size());
         }
         else if (text.startsWith("get:")) {
             String itemId = text.substring("get:".length());
             //J-
-            return ZMsg.newStringMsg(items.stream()
+            return newStringMsg(items.stream()
                     .filter(item -> item.equals("item:" + itemId))
                     .findFirst()
                     .orElse("error: item " + itemId + " not found!"));
             //J+
         }
-        return ZMsg.newStringMsg("unknown request: " + text);
+        return newStringMsg("unknown request: " + text);
     }
 
     /**
