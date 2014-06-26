@@ -65,7 +65,13 @@ public class Node implements IDetachedRunnable {
         }
     }
 
-    public String getAddress() {
-        return address;
+    /**
+     * @return a new {@link ZMQ#REQ} socket connected to this node's address, typically
+     *         used for testing.
+     */
+    public Socket createRequestSocket() {
+        Socket req = context.createSocket(ZMQ.REQ);
+        req.connect(address);
+        return req;
     }
 }

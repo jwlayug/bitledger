@@ -18,8 +18,6 @@ package bit.ledger.node;
 
 import org.junit.Test;
 
-import org.zeromq.ZContext;
-import org.zeromq.ZMQ;
 import org.zeromq.ZThread;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -62,19 +60,16 @@ public class FloodFillTests {
         Node node1 = new Node(network);
         ZThread.start(node1);
 
-        try (ZContext context = new ZContext()) {
-            Socket socket = context.createSocket(ZMQ.REQ);
-            socket.connect(node1.getAddress());
+        Socket socket = node1.createRequestSocket();
 
-            newStringMsg("count").send(socket);
-            assertThat(recvMsg(socket).popString(), is("0"));
+        newStringMsg("count").send(socket);
+        assertThat(recvMsg(socket).popString(), is("0"));
 
-            newStringMsg("item:1").send(socket);
-            assertThat(recvMsg(socket).popString(), equalTo("ACK"));
+        newStringMsg("item:1").send(socket);
+        assertThat(recvMsg(socket).popString(), equalTo("ACK"));
 
-            newStringMsg("item:2").send(socket);
-            assertThat(recvMsg(socket).popString(), equalTo("ACK"));
-        }
+        newStringMsg("item:2").send(socket);
+        assertThat(recvMsg(socket).popString(), equalTo("ACK"));
 
         //assertThat(node1.items.size(), equalTo(2));
 
