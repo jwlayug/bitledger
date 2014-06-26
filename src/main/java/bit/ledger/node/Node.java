@@ -42,24 +42,15 @@ public class Node implements IDetachedRunnable {
 
     @Override
     public void run(Object... args) {
-        System.out.println("Node.start");
-
-        System.out.println("Node1: binding to " + address);
         socket.bind(address);
-
         while (!Thread.currentThread().isInterrupted()) {
-            System.out.println("Node1: about to receive");
             receive();
-            System.out.println("Node1: called receive");
         }
-        System.out.println("thread interrupted or otherwise cannot receive.");
         context.destroy();
     }
 
     private void receive() {
-        System.out.println("about to recvMsg");
         ZMsg msg = ZMsg.recvMsg(socket);
-        System.out.println("after recvMsg: " + msg);
         items.add(msg.popString());
         ZMsg ack = ZMsg.newStringMsg("ACK");
         ack.send(socket);

@@ -62,9 +62,7 @@ public class FloodFillTests {
         Network network = new Network();
 
         Node node1 = new Node(network);
-        System.out.println("before start");
         ZThread.start(node1);
-        System.out.println("after start");
 
         assertThat(node1.items.size(), equalTo(0));
 
@@ -73,8 +71,7 @@ public class FloodFillTests {
             ZMQ.Socket socket = context.socket(ZMQ.REQ);
             socket.connect(node1.address);
             socket.send("item:1");
-            String response = socket.recvStr();
-            System.out.println("response = " + response);
+            socket.recvStr();
             socket.send("item:2");
             socket.recvStr();
             socket.close();
