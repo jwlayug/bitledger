@@ -29,29 +29,6 @@ import static org.zeromq.ZMsg.*;
 
 public class FloodFillTests {
 
-    /*
-
-    first node comes online.
-
-    several Items are added to its (ordered) Collection (intentionally being generic here)
-
-    second node comes online.
-
-    second node "discovers" first (is directly supplied with its address), and adds it as a peer.
-
-    second negotiates with first to receive all Items.
-
-    --> wait in loop, asserting for both nodes to have identical information. <--
-
-    add an Item to second.
-
-    second broadcasts new Item to first.
-
-    --> wait in loop, asserting for both nodes to have identical information. <--
-
-     */
-
-    //public static void main(String... args) throws InterruptedException {
     @Test
     public void test() throws InterruptedException {
 
