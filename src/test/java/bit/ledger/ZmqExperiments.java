@@ -54,16 +54,16 @@ public class ZmqExperiments {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
 
         executor.execute(() -> {
-                ZMQ.Socket server = context.socket(ZMQ.REP);
-                server.bind(address);
-                byte[] recMsg;
-                do {
-                    recMsg = server.recv(0);
-                    server.send("");
-                }
-                while (!Arrays.equals(end, recMsg));
-                server.close();
-            });
+            ZMQ.Socket server = context.socket(ZMQ.REP);
+            server.bind(address);
+            byte[] recMsg;
+            do {
+                recMsg = server.recv(0);
+                server.send("");
+            }
+            while (!Arrays.equals(end, recMsg));
+            server.close();
+        });
 
         executor.schedule(() -> {
                 ZMQ.Socket client = context.socket(ZMQ.REQ);

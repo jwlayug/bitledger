@@ -48,7 +48,6 @@ public class Node implements IDetachedRunnable {
 
         replySocket.bind(address);
 
-        //J-
         network.discoverPeers().stream().forEach(address -> {
             Socket peer = context.createSocket(ZMQ.REQ);
             if (!this.address.equals(address)) { // don't connect to ourselves
@@ -72,7 +71,6 @@ public class Node implements IDetachedRunnable {
                 }
             }
         });
-        //J+
 
         while (!Thread.currentThread().isInterrupted()) {
             ZMsg reply = handle(recvMsg(replySocket));
