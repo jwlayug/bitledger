@@ -52,7 +52,8 @@ public class Tests {
         alice.add(alice_1);
         alice.add(alice_2);
 
-        Transaction tx1 = Transaction.of(
+        Transaction tx1 =
+            Transaction.of(
                 txid.incrementAndGet(),
                 Collections.emptyList(),
                 Arrays.asList(
@@ -67,7 +68,8 @@ public class Tests {
         Recipient bob_1 = Recipient.of("bob_1");
         bob.add(bob_1);
 
-        Transaction tx2 = Transaction.of(
+        Transaction tx2 =
+            Transaction.of(
                 txid.incrementAndGet(),
                 Arrays.asList(TransactionInput.of(tx1.getId(), 0)), // spend the original coinbase tx output
                 Arrays.asList(
@@ -91,7 +93,8 @@ public class Tests {
 
         // attempt to double spend
         Recipient charlie_1 = Recipient.of("charlie_1");
-        Transaction tx3 = Transaction.of(
+        Transaction tx3 =
+            Transaction.of(
                 txid.incrementAndGet(),
                 Arrays.asList(TransactionInput.of(tx1.getId(), 0)), // try to double-spend the original tx
                 Arrays.asList(

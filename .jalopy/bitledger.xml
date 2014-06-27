@@ -994,7 +994,7 @@
       <disable>
        <complexExpr>false</complexExpr>
       </disable>
-      <enable>false</enable>
+      <enable>true</enable>
       <keepLinebreak>true</keepLinebreak>
       <keepLinebreakArray>true</keepLinebreakArray>
       <keepLinebreakCallArgs>true</keepLinebreakCallArgs>
